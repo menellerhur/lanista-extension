@@ -1,0 +1,102 @@
+{
+  "manifest_version": 3,
+  "name": "Lanista Extension",
+  "version": "1.0",
+  "description": "Databas för utrustning, matchstatistik i tabellform, kompaktare turneringsschema och andra visuella justeringar.",
+  "icons": {
+    "16": "icons/icon16.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
+  "permissions": ["storage"],
+  "web_accessible_resources": [
+    {
+      "resources": ["data/*.json"],
+      "matches": ["https://beta.lanista.se/*"]
+    }
+  ],
+  "content_scripts": [
+    {
+      "matches": ["https://beta.lanista.se/*"],
+      "js": [
+        "js/main-world/network-interceptor.js",
+        "js/main-world/app-connector.js",
+        "js/main-world/socket-listener.js",
+        "js/main-world/state-synchronizer.js",
+        "js/main-world/router-observer.js",
+        "js/main-world/bus-listener.js"
+      ],
+      "run_at": "document_start",
+      "world": "MAIN"
+    },
+    {
+      "matches": ["https://beta.lanista.se/*"],
+      "js": [
+        "js/isolated-world/constants.js",
+        "js/isolated-world/utils.js",
+        "js/isolated-world/icons.js",
+        "js/isolated-world/settings.js",
+        "js/isolated-world/api-handler.js",
+        "js/isolated-world/sidebar.js",
+        "js/isolated-world/notifications.js",
+        "js/isolated-world/page-navigation.js",
+        "js/isolated-world/extension/templates.js",
+        "js/isolated-world/extension/page-builder.js",
+        "js/isolated-world/extension/page-handlers.js",
+        "js/isolated-world/extension/page.js",
+        "js/isolated-world/auctions.js",
+        "js/isolated-world/teambattles.js",
+        "js/isolated-world/team-beasts-quota.js",
+        "js/isolated-world/tournament/main.js",
+        "js/isolated-world/tournament/preview.js",
+        "js/isolated-world/tournament/reports-menu.js",
+        "js/isolated-world/tournament/parse.js",
+        "js/isolated-world/tournament/render.js",
+        "js/isolated-world/tournament/info-layout.js",
+        "js/isolated-world/merchants.js",
+        "js/isolated-world/mass-challenge.js",
+        "js/isolated-world/main.js",
+        "js/isolated-world/nav/badges.js",
+        "js/isolated-world/right-panel-collapse.js",
+        "js/isolated-world/nav/enhancements.js",
+        "js/isolated-world/nav/merge.js",
+        "js/isolated-world/nav/hide-empty.js",
+        "js/isolated-world/nav/simplify-community.js",
+        "js/isolated-world/nav/cooldowns.js",
+        "js/isolated-world/nav/avatar-sync.js",
+        "js/isolated-world/battle-report/manager.js",
+        "js/isolated-world/battle-report/actions.js",
+        "js/isolated-world/battle-report/stats.js",
+        "js/isolated-world/battle-report/colors.js",
+        "js/isolated-world/battle-report/init.js",
+        "js/isolated-world/avatar-info.js",
+        "js/isolated-world/avatar-statistics.js",
+        "js/isolated-world/database/config.js",
+        "js/isolated-world/database/state.js",
+        "js/isolated-world/database/data.js",
+        "js/isolated-world/database/filters.js",
+        "js/isolated-world/database/tables.js",
+        "js/isolated-world/database/columns.js",
+        "js/isolated-world/database/ui-tooltip.js",
+        "js/isolated-world/database/ui-selection.js",
+        "js/isolated-world/database/ui-filters-summary.js",
+        "js/isolated-world/database/ui-table-refresh.js",
+        "js/isolated-world/database/ui-subcats.js",
+        "js/isolated-world/database/ui-col-picker.js",
+        "js/isolated-world/database/ui-col-filter.js",
+        "js/isolated-world/database/ui.js",
+        "js/isolated-world/database/page.js"
+      ],
+      "css": [
+        "styles/overrides.css",
+        "styles/merchants.css",
+        "styles/settings-panel.css",
+        "styles/database.css",
+        "styles/tournament-bracket.css",
+        "styles/misc.css",
+        "styles/battle-report.css"
+      ],
+      "run_at": "document_end"
+    }
+  ]
+}

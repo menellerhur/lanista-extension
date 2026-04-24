@@ -1,0 +1,84 @@
+/* Highlight own team battle row in the open team battles list */
+tr.ext-own-teambattle {
+  box-shadow: inset 3px 0 0 var(--primary);
+}
+
+/* Daily quota counter for "Lagspel mot odjur" on the team battles page */
+.ext-tb-quota {
+  display: inline-flex;
+  align-items: center;
+  padding: 1px 0.6rem 0;
+  height: 1.75rem;
+  border-radius: 0.375rem;
+  border: 1px solid var(--border);
+  background: color-mix(in srgb, var(--muted), var(--background) 70%);
+  color: var(--muted-foreground);
+  font-size: 0.8rem;
+  font-weight: 500;
+  white-space: nowrap;
+}
+.ext-tb-quota.ext-tb-quota-max {
+  border-color: oklch(0.627 0.194 149.214);
+  color: oklch(0.627 0.194 149.214);
+  background: color-mix(in oklch, oklch(0.627 0.194 149.214) 15%, transparent);
+}
+
+/* Avatar Info: Side-by-side tactics */
+.ext-info-tactics-grid {
+  display: flex;
+  flex-wrap: wrap;
+  margin-top: 1.5rem;
+}
+.ext-info-tactics-col {
+  width: 100% !important; /* Stacked by default */
+  box-sizing: border-box !important;
+  padding: 0 !important;
+  border: none !important;
+}
+.ext-info-tactics-col:first-child {
+  margin-bottom: 2.5rem !important;
+}
+.ext-info-tactics-col > p {
+  margin-top: 0 !important;
+  margin-bottom: 0.75rem !important;
+}
+.ext-info-tactics-col > .mb-2,
+.ext-info-tactics-col > .flex,
+.ext-info-tactics-col > .my-2 {
+  margin-bottom: 0.5rem !important;
+}
+.ext-info-tactics-col .w-5\/12,
+.ext-info-tactics-col .w-7\/12,
+.ext-info-tactics-col .w-11\/12,
+.ext-info-tactics-col .w-1\/12 {
+  width: 50% !important;
+}
+
+/* Wide screen: Activate side-by-side at 1300px to prevent flapping */
+@media (min-width: 1527px) {
+  .ext-info-tactics-col {
+    width: 50% !important;
+  }
+  .ext-info-tactics-col:first-child {
+    border-right: 1px solid color-mix(in srgb, var(--border), transparent 70%) !important;
+    padding-right: 2.5rem !important;
+    margin-bottom: 0 !important;
+  }
+  .ext-info-tactics-col:last-child {
+    padding-left: 2.5rem !important;
+  }
+}
+
+/* Compact "Skapa lagspel" button */
+body.ext-s-compact-teambattles-create-btn .ext-teambattle-create-btn {
+  height: 28px !important;
+  width: 115px !important;
+  min-height: 28px !important;
+  padding: 0 8px !important;
+  font-size: 13px !important;
+  line-height: 1 !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  transition: none !important;
+}

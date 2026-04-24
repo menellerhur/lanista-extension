@@ -1,0 +1,897 @@
+/* Stats tooltip */
+#ext-weapon-tooltip {
+  display: none;
+  position: fixed;
+  z-index: 9999;
+  background: oklch(0.98 0.007 82);
+  color: oklch(0.08 0.022 50);
+  border: 1px solid oklch(0.65 0.055 81);
+  border-radius: 8px;
+  padding: 8px;
+  font-size: 12px;
+  font-family: "Open Sans", sans-serif;
+  pointer-events: none;
+  line-height: 16px;
+  box-shadow: rgba(0,0,0,0.1) 0px 4px 6px -1px, rgba(0,0,0,0.1) 0px 2px 4px -2px;
+  width: 580px;
+}
+#ext-weapon-tooltip .font-serif {
+  font-family: Cinzel, serif;
+  font-size: 16px;
+  font-weight: 400;
+}
+#ext-weapon-tooltip .ext-wtip-panels {
+  display: flex;
+  padding-top: 7px;
+}
+#ext-weapon-tooltip .ext-wtip-row {
+  display: flex;
+  margin-bottom: 4px;
+  border-top: 1px solid oklch(0.872 0.01 258.338);
+  padding-top: 8px;
+  padding-bottom: 8px;
+}
+#ext-weapon-tooltip .ext-wtip-label {
+  width: 41.666%;
+  font-weight: 600;
+  font-size: 12px;
+}
+#ext-weapon-tooltip .ext-wtip-value {
+  width: 58.333%;
+  text-align: right;
+  padding-right: 8px;
+}
+#ext-weapon-tooltip .ext-wtip-divider {
+  border-left: 1px solid oklch(0.872 0.01 258.338);
+  padding-left: 12px;
+}
+.ext-weapon-tip-name {
+  font-family: Cinzel, serif;
+  font-size: 16px;
+  font-weight: 400;
+  margin-bottom: 10px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid oklch(0.65 0.055 81);
+}
+
+#ext-items-stats-tooltip {
+  display: none;
+  position: fixed;
+  z-index: 9999;
+  background: rgba(252, 244, 220, 1);
+  color: #000;
+  border: 1px solid rgba(180, 160, 110, 0.6);
+  border-radius: 6px;
+  padding: 6px 10px;
+  font-size: 11px;
+  pointer-events: none;
+  white-space: pre;
+  line-height: 1.4;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+}
+
+/* BV bonus breakdown columns (parera table) */
+.ext-bv-sep, .ext-bv-sep-hd {
+  width: 1px;
+  padding-left: 1px !important;
+  padding-right: 1px !important;
+}
+.ext-bv-num {
+  width: 1px;
+  padding-left: 2px !important;
+  padding-right: 2px !important;
+}
+/* Remove vertical header separators between BV sub-columns (keep line after closing paren) */
+#ext-items-table thead th.ext-bv-sep-hd:has(~ th[colspan])::after,
+#ext-items-table thead th:has(+ th.ext-bv-sep-hd)::after,
+#ext-items-table thead th:has(+ th.ext-bv-btn-th)::after {
+  display: none;
+}
+/* Show ⋮ button when hovering anywhere over the BV group header */
+#ext-items-table thead tr:has(.ext-bv-group-th:hover) .ext-bv-btn-th .ext-col-menu-icon {
+  opacity: 1;
+}
+
+/* Locked filter state (parera view) */
+.ext-filter-locked {
+  opacity: 0.55;
+  border-style: dashed !important;
+  cursor: not-allowed !important;
+}
+
+/* Enchant row tooltip */
+#ext-enchant-tooltip {
+  display: none;
+  position: fixed;
+  z-index: 9999;
+  background: rgba(252, 244, 220, 1);
+  color: #000;
+  border: 1px solid rgba(180, 160, 110, 0.6);
+  border-radius: 6px;
+  padding: 10px 14px;
+  font-size: 11px;
+  pointer-events: none;
+  line-height: 1.4;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+  max-width: 520px;
+}
+.ext-enchant-tip-header {
+  font-weight: bold;
+  font-size: 12px;
+  margin-bottom: 6px;
+  padding-bottom: 4px;
+  border-bottom: 1px solid rgba(180, 160, 110, 0.5);
+}
+.ext-enchant-tip-body {
+  display: flex;
+  gap: 0;
+}
+.ext-enchant-tip-left {
+  min-width: 160px;
+  padding-right: 14px;
+}
+.ext-enchant-tip-right {
+  border-left: 1px solid rgba(180, 160, 110, 0.5);
+  padding-left: 14px;
+}
+
+/* Search input with clear button */
+.ext-search-wrap {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+}
+.ext-search-input {
+  width: 7rem;
+  padding-right: 1.4rem;
+}
+.ext-search-clear {
+  position: absolute;
+  right: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer !important;
+  color: var(--muted-foreground);
+  border-radius: 50%;
+  width: 14px;
+  height: 14px;
+}
+.ext-search-clear:hover {
+  color: var(--foreground);
+  background-color: var(--muted);
+}
+.ext-search-clear svg {
+  pointer-events: none;
+}
+
+/* Enchant type multi-select dropdown */
+#ext-enchant-type-wrap {
+  position: relative;
+}
+.ext-enchant-type-panel {
+  position: absolute;
+  top: calc(100% + 2px);
+  left: 0;
+  z-index: 100;
+  background: var(--background);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 4px;
+  min-width: 180px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+.ext-enchant-type-option {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 8px;
+  font-size: 11px;
+  cursor: pointer;
+  border-radius: 4px;
+  white-space: nowrap;
+  user-select: none;
+}
+.ext-enchant-type-option:hover {
+  background: var(--muted);
+}
+
+
+/* Selected row highlight */
+#ext-items-table tr.ext-row-selected td {
+  background-color: rgba(99, 102, 241, 0.13) !important;
+}
+#ext-items-table tr,
+#ext-items-table th,
+#ext-items-table td {
+  background-image: none !important;
+}
+#ext-items-table tr.ext-items-row:hover td {
+  background-color: #FDEFDF !important;
+}
+#ext-items-table tr.ext-row-selected:hover td {
+  background-color: rgba(99, 102, 241, 0.22) !important;
+}
+#ext-items-table tr.ext-items-row {
+  height: 25px;
+}
+#ext-items-table tr[data-item-id] {
+  cursor: pointer !important;
+}
+
+/* Selection count + clear (inline with item count) */
+.ext-selection-count, .ext-row-count {
+  display: inline-flex;
+  align-items: center;
+  font-size: 0.75rem;
+  color: var(--muted-foreground);
+  user-select: none;
+  padding: 3px 7px;
+  border-radius: 4px;
+  position: relative;
+}
+.ext-selection-count {
+  cursor: pointer !important;
+}
+
+.ext-selection-count::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 4px;
+}
+.ext-selection-count svg {
+  margin-right: 5px;
+}
+.ext-selection-count * {
+  cursor: pointer !important;
+}
+.ext-selection-count:hover {
+  color: var(--foreground);
+}
+.ext-selection-count:hover::before {
+  background-color: var(--muted);
+}
+.ext-selection-count:active {
+  color: var(--foreground);
+}
+.ext-selection-count:active::before {
+  background-color: color-mix(in srgb, var(--muted) 75%, var(--foreground) 25%);
+  inset: 1px;
+}
+.ext-selection-pipe {
+  display: inline-block;
+  width: 1px;
+  height: 12px;
+  background: #CEC3AF;
+  margin: 0 0px 0 0px;
+  vertical-align: middle;
+  position: relative;
+  top: -2px;
+  user-select: none;
+}
+.ext-selection-clear {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer !important;
+  color: var(--muted-foreground);
+  border-radius: 4px;
+  padding: 3px 4px;
+  flex-shrink: 0;
+  user-select: none;
+  position: relative;
+}
+.ext-selection-clear::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 4px;
+}
+.ext-selection-clear svg {
+  pointer-events: none;
+  position: relative;
+}
+.ext-selection-clear:hover {
+  color: var(--foreground);
+}
+.ext-selection-clear:hover::before {
+  background-color: var(--muted);
+}
+.ext-selection-clear:active {
+  color: var(--foreground);
+}
+.ext-selection-clear:active::before {
+  background-color: color-mix(in srgb, var(--muted) 75%, var(--foreground) 25%);
+  inset: 1px;
+}
+
+/* Hide number input spinners on the database page */
+#ext-panel input[type="number"]::-webkit-inner-spin-button,
+#ext-panel input[type="number"]::-webkit-outer-spin-button,
+#ext-col-filter-panel input[type="number"]::-webkit-inner-spin-button,
+#ext-col-filter-panel input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+}
+
+/* Extension panel: exact viewport height, no page scroll */
+#ext-panel {
+  user-select: none;
+}
+#ext-panel[data-ext-page="database"] {
+  height: 100vh;
+  overflow: hidden;
+}
+#ext-panel input[type="text"],
+#ext-panel input[type="number"],
+#ext-panel input[type="search"] {
+  user-select: text;
+}
+#ext-panel [data-slot="card"] {
+  box-sizing: border-box;
+}
+#ext-panel[data-ext-page="database"] [data-slot="card"] {
+  height: 100%;
+}
+#ext-panel [data-slot="card"] > div {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+#ext-items-tab {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+#ext-items-table {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+#ext-items-table-scroll {
+  flex: 1;
+  min-height: 0;
+}
+
+/* Items table: sticky header */
+#ext-items-table thead tr {
+  border-bottom: none !important;
+}
+#ext-items-table thead th {
+  position: sticky;
+  top: 0;
+  background: var(--background);
+  z-index: 1;
+  text-shadow: none !important;
+  font-weight: 600;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--muted-foreground);
+}
+#ext-items-table thead th::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 1px;
+  background: var(--border);
+}
+#ext-items-table thead th::after {
+  content: "";
+  position: absolute;
+  right: 0;
+  top: 20%;
+  height: 60%;
+  width: 1px;
+  background: var(--border);
+  opacity: 0.5;
+}
+#ext-items-table thead th:last-child::after {
+  display: none;
+}
+
+/* Items table: custom scrollbar */
+#ext-items-table-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: var(--border) transparent;
+}
+#ext-items-table-scroll::-webkit-scrollbar {
+  width: 6px;
+}
+#ext-items-table-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+#ext-items-table-scroll::-webkit-scrollbar-thumb {
+  background-color: var(--border);
+  border-radius: 3px;
+}
+#ext-items-table-scroll::-webkit-scrollbar-thumb:hover {
+  background-color: var(--muted-foreground);
+}
+
+/* Items table: restrict text selection to Name column only */
+/* Enchant modifier sub-text (max procs) — override tooltip line-height */
+.ext-mod-sub { display: block; line-height: normal; }
+
+#ext-items-table * { cursor: default; }
+#ext-items-table [data-tooltip] { cursor: default; }
+#ext-items-table [data-sort-col],
+#ext-items-table [data-sort-col] * { cursor: pointer !important; }
+
+#ext-items-table tr[data-item-id] {
+  cursor: pointer !important;
+}
+
+/* Column header inner layout — label + action buttons side by side */
+.ext-th-inner {
+  display: flex;
+  align-items: center;
+  white-space: nowrap;
+  width: 100%;
+  line-height: 1.2;
+}
+th:has(.ext-th-inline-search) {
+  position: relative;
+}
+#ext-items-table th[data-sort-col="name"] {
+  min-width: 150px;
+}
+.ext-th-inline-search {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 18px;
+  cursor: text !important;
+  border: none;
+  background: transparent;
+  color: var(--foreground);
+  font-weight: normal;
+  font-size: 12px;
+  padding: 0 8px;
+  outline: none;
+}
+.ext-th-inline-search::placeholder {
+  color: var(--muted-foreground);
+  opacity: 0.7;
+}
+.ext-th-inner:has(.ext-th-inline-search) .ext-th-actions {
+  margin-left: auto;
+  position: relative;
+  z-index: 1;
+}
+.ext-th-actions {
+  display: inline-flex;
+  align-items: center;
+  gap: 1px;
+  margin-left: auto;
+}
+
+/* Sort arrow */
+.ext-sort-arrow {
+  display: inline-flex;
+  align-items: center;
+  color: var(--foreground);
+  margin-left: 1px;
+  visibility: hidden;
+}
+.ext-sort-arrow--active {
+  visibility: visible;
+}
+
+/* Active filter indicator: colored bottom border + label text */
+#ext-items-table th.ext-th--filter-active:not([data-sort-col="name"])::before {
+  background: var(--primary);
+  height: 2px;
+}
+#ext-items-table th.ext-th--filter-active:not([data-sort-col="name"]) .ext-th-inner > span:first-child {
+  color: var(--primary) !important;
+}
+
+/* ⋮ filter icon in column headers */
+.ext-col-menu-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: auto;
+  width: 8px;
+  height: 14px;
+  border-radius: 2px;
+  font-size: 13px;
+  line-height: 1;
+  color: var(--muted-foreground);
+  cursor: pointer !important;
+  opacity: 0;
+  transition: opacity 0.1s;
+  position: relative;
+}
+.ext-col-menu-icon::before {
+  content: '';
+  position: absolute;
+  inset: -1px 0;
+  border-radius: 3px;
+}
+.ext-col-menu-icon::after {
+  content: '';
+  position: absolute;
+  inset: -3px;
+}
+.ext-col-menu-icon svg {
+  position: relative;
+}
+.ext-col-menu-icon:hover {
+  color: var(--foreground);
+}
+.ext-col-menu-icon:not(.ext-col-search-icon):hover::before {
+  background: var(--muted);
+}
+.ext-col-menu-icon:not(.ext-col-search-icon):active::before {
+  background: color-mix(in srgb, var(--muted) 75%, var(--foreground) 25%);
+  transform: scale(0.83, 0.92);
+}
+#ext-items-table th:hover .ext-col-menu-icon,
+#ext-items-table th.ext-th--filter-active .ext-col-menu-icon {
+  opacity: 1;
+}
+.ext-col-menu-icon--active {
+  color: var(--primary) !important;
+  opacity: 1 !important;
+}
+.ext-col-search-icon {
+  width: 14px;
+  opacity: 0.45 !important;
+  transition: opacity 0.15s, color 0.15s;
+}
+.ext-col-search-icon::after {
+  display: none;
+}
+.ext-col-search-icon:hover {
+  background: none;
+  opacity: 1 !important;
+  color: var(--foreground);
+}
+.ext-col-menu-icon--active.ext-col-search-icon {
+  opacity: 1 !important;
+}
+
+
+
+/* Column picker dropdown */
+#ext-col-picker-btn,
+#ext-items-weapon-subview-btn {
+  min-width: 120px;
+}
+#ext-col-picker-btn:hover,
+#ext-items-weapon-subview-btn:hover {
+  background-color: var(--muted) !important;
+}
+.ext-col-picker-panel {
+  position: absolute;
+  top: calc(100% + 2px);
+  right: 0;
+  z-index: 200;
+  background: var(--background);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  min-width: 200px;
+  max-width: 260px;
+}
+
+.ext-cpp-search-wrap input {
+  background: transparent;
+  width: 100%;
+  border: none;
+  border-bottom: 1px solid var(--border);
+  border-radius: 5px 5px 0 0;
+  padding: 6px 12px;
+  height: 30px;
+}
+.ext-cpp-list {
+  position: relative;
+  max-height: 240px;
+  overflow-y: auto;
+  padding: 4px 0;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border) transparent;
+}
+.ext-cpp-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 8px;
+  font-size: 11px;
+  cursor: pointer;
+  user-select: none;
+  color: var(--foreground);
+}
+.ext-cpp-item:hover {
+  background: var(--muted);
+}
+
+.ext-cpp-item--placeholder {
+  visibility: visible !important;
+  background: var(--muted) !important;
+  border: 1px dashed var(--muted-foreground);
+  border-radius: 4px;
+  box-sizing: border-box;
+  opacity: 0.5;
+  margin: 1px 0;
+}
+
+.ext-dragging {
+  cursor: grabbing !important;
+}
+
+.ext-dragging .ext-cpp-item--present:not(.ext-cpp-item--placeholder),
+.ext-dragging .ext-cpp-item--hidden:not(.ext-cpp-item--placeholder) {
+  opacity: 0.6;
+}
+.ext-cpp-item-save-view:active {
+  transform: translateY(1px);
+  background: color-mix(in srgb, var(--muted) 75%, var(--foreground) 25%);
+}
+.ext-cpp-delete {
+  margin-left: auto;
+  opacity: 0.4;
+  cursor: pointer;
+  width: 16px;
+  height: 16px;
+  font-size: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  transition: all 0.1s ease;
+}
+.ext-cpp-delete:hover {
+  opacity: 1;
+}
+.ext-cpp-naming-panel {
+  padding: 4px;
+  background: var(--background);
+  margin-top: 2px;
+}
+.ext-cpp-naming-input {
+  width: 100%;
+  height: 28px;
+  background: var(--muted);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 0 8px;
+  font-size: 11px;
+  outline: none;
+  margin-bottom: 6px;
+}
+.ext-cpp-naming-btns {
+  display: flex;
+  gap: 4px;
+}
+.ext-cpp-label {
+  flex: 1;
+  white-space: nowrap;
+}
+.ext-cpp-naming-btn {
+  flex: 1;
+  height: 24px;
+  border-radius: 3px;
+  font-size: 10px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  background: var(--background);
+  transition: all 0.1s ease;
+  position: relative;
+}
+.ext-cpp-naming-btn:hover {
+  background: var(--muted);
+}
+.ext-cpp-naming-btn:active {
+  transform: translateY(1px);
+  background: color-mix(in srgb, var(--muted) 75%, var(--foreground) 25%);
+}
+.ext-btn-action:hover {
+  background: var(--muted);
+}
+.ext-btn-action:active {
+  transform: translateY(1px);
+  background: color-mix(in srgb, var(--muted) 75%, var(--foreground) 25%);
+  color: var(--foreground);
+}
+.ext-cpp-item--present {
+  color: var(--muted-foreground);
+  cursor: pointer;
+}
+.ext-cpp-check {
+  width: 12px;
+  font-size: 10px;
+  color: var(--primary);
+  flex-shrink: 0;
+}
+.ext-cpp-item--hidden .ext-cpp-check {
+  color: var(--muted-foreground);
+}
+.ext-cpp-item--disabled {
+  opacity: 0.5;
+  cursor: default !important;
+}
+.ext-cpp-base {
+  margin-left: auto;
+  font-size: 5px;
+  color: var(--muted-foreground);
+  opacity: 0.6;
+  flex-shrink: 0;
+}
+.ext-cpp-empty {
+  padding: 6px 8px;
+  font-size: 11px;
+  color: var(--muted-foreground);
+}
+.ext-cpp-footer {
+  padding: 5px 6px;
+  border-top: 1px solid var(--border);
+}
+.ext-cpp-footer .ext-cfp-clear-btn {
+  padding: 2px 4px;
+}
+
+/* Column filter panel (⋮ menu popup) */
+.ext-cfp-header {
+  cursor: default;
+  user-select: none;
+  font-size: 10px;
+  font-weight: 500;
+  color: var(--muted-foreground);
+  /* padding-bottom: 5px; */
+  margin-bottom: 7px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.ext-cfp-sep {
+  border-top: 1px solid color-mix(in srgb, var(--border) 55%, transparent);
+  margin: 5px 0 4px;
+}
+
+#ext-col-filter-panel {
+  display: none;
+  position: fixed;
+  z-index: 9000;
+  background: var(--background);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 8px;
+  min-width: 90px;
+  max-width: 220px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  font-size: 11px;
+}
+
+.ext-cfp-filter-row > label {
+  font-size: 10px;
+  color: var(--muted-foreground);
+  letter-spacing: 0.04em;
+  display: block;
+}
+.ext-cfp-input {
+  height: 24px;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  background: white;
+  padding: 0 5px;
+  font-size: 11px;
+  outline: none;
+  color: var(--foreground);
+  box-sizing: border-box;
+}
+.ext-cfp-minmax-wrap {
+  display: flex;
+  gap: 4px;
+  margin-top: 7px;
+  margin-bottom: 9px;
+}
+.ext-cfp-min, .ext-cfp-max { width: 72px; }
+.ext-cfp-text { width: 100%; display: block; }
+.ext-cfp-bool {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  margin-top: 2px;
+}
+.ext-cfp-bool label { cursor: pointer; font-size: 11px; text-transform: none; letter-spacing: 0; color: var(--foreground); }
+.ext-cfp-bool input[type="radio"] {
+  accent-color: var(--muted-foreground);
+  vertical-align: middle;
+  position: relative;
+  top: -2px;
+  cursor: pointer;
+}
+.ext-cfp-clear-btn {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  width: 100%;
+  padding: 2px 4px;
+  font-size: 11px;
+  border: none;
+  background: none;
+  color: var(--muted-foreground);
+  cursor: pointer;
+  text-align: left;
+  box-sizing: border-box;
+  position: relative;
+}
+.ext-cfp-clear-btn:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+.ext-cfp-clear-btn::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 3px;
+}
+.ext-cfp-clear-btn svg,
+.ext-cfp-clear-btn span {
+  position: relative;
+}
+.ext-cfp-clear-btn:not(:disabled):hover {
+  color: var(--foreground);
+}
+.ext-cfp-clear-btn:not(:disabled):hover::before {
+  background-color: var(--muted);
+}
+.ext-cfp-clear-btn:not(:disabled):active {
+  color: var(--foreground);
+}
+.ext-cfp-clear-btn:not(:disabled):active::before {
+  background-color: color-mix(in srgb, var(--muted) 75%, var(--foreground) 25%);
+  inset: 1px;
+}
+
+/* Race multi-select checkbox list */
+.ext-cfp-race-list {
+  max-height: 280px;
+  overflow-y: auto;
+  margin-top: 3px;
+  padding: 0 6px;
+  margin-left: -6px;
+  margin-right: -6px;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border) transparent;
+}
+.ext-cfp-race-item {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 2px 6px;
+  font-size: 11px;
+  cursor: pointer;
+  user-select: none;
+  color: var(--foreground);
+  border-radius: 4px;
+}
+.ext-cfp-race-item:hover {
+  background-color: #D2C6AF;
+}
+.ext-cfp-race-item input[type="checkbox"] {
+  accent-color: var(--primary);
+  cursor: pointer;
+}
+.ext-cfp-prof-level-item {
+  padding-left: 16px;
+}
+
+/* Custom Drag state */
+.ext-dragging, .ext-dragging * {
+  cursor: grabbing !important;
+}

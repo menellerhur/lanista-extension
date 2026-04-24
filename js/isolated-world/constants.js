@@ -1,0 +1,3 @@
+// Shared CSS classes for extension tab trigger buttons.
+// Must be var (not const/let) so it is accessible across all content script files.
+var EXT_TAB_TRIGGER_CLASS = "tab-trigger relative -mb-px cursor-pointer inline-flex items-center justify-center gap-1.5 rounded-t-md border border-transparent border-b-0 bg-transparent py-1 font-medium whitespace-nowrap text-muted-foreground transition-colors duration-150 data-[state=active]:z-10 data-[state=active]:border-border/70 data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=inactive]:hover:text-foreground data-[state=inactive]:hover:bg-muted/20 h-7 px-2 text-xs md:text-sm";

@@ -1,0 +1,281 @@
+/* Hide original summary */
+body.ext-s-battle-stats-hide-original .battle-text span.summary.font-light,
+body.ext-s-battle-stats-hide-original .battle-text p > br {
+    display: none !important;
+}
+
+body.ext-s-battle-stats #ext-battle-stats-root {
+    margin-top: 1.5rem;
+    width: 100%;
+    user-select: none;
+}
+
+body.ext-s-battle-stats #ext-battle-stats-root table {
+    width: 100%;
+    min-width: 580px;
+    text-align: left;
+    font-size: 0.875rem;
+    font-weight: 400;
+    border-collapse: collapse;
+    table-layout: auto;
+}
+
+body.ext-s-battle-stats #ext-battle-stats-root table,
+body.ext-s-battle-stats #ext-battle-stats-root thead,
+body.ext-s-battle-stats #ext-battle-stats-root tbody,
+body.ext-s-battle-stats #ext-battle-stats-root tr,
+body.ext-s-battle-stats #ext-battle-stats-root th,
+body.ext-s-battle-stats #ext-battle-stats-root td {
+    background: none !important;
+    background-color: transparent !important;
+    background-image: none !important;
+    box-shadow: none !important;
+    border-color: transparent; /* fallback for potential cell borders */
+}
+
+body.ext-s-battle-stats #ext-battle-stats-root th,
+body.ext-s-battle-stats #ext-battle-stats-root td {
+    padding: 0.25rem 0.5rem;
+}
+
+/* Right-align all columns except the first */
+body.ext-s-battle-stats #ext-battle-stats-root th:not(:first-child),
+body.ext-s-battle-stats #ext-battle-stats-root td:not(:first-child) {
+    text-align: right;
+}
+
+/* "Skada" column (second) */
+body.ext-s-battle-stats #ext-battle-stats-root th:nth-child(2),
+body.ext-s-battle-stats #ext-battle-stats-root td:nth-child(2) {
+    width: 65px;
+}
+
+/* "Tot" column (third) as narrow as possible */
+body.ext-s-battle-stats #ext-battle-stats-root th:nth-child(3),
+body.ext-s-battle-stats #ext-battle-stats-root td:nth-child(3) {
+    width: 45px;
+    white-space: nowrap;
+    padding-left: 0.2rem;
+}
+
+/* Flexible width for numeric columns (4 and up) */
+body.ext-s-battle-stats #ext-battle-stats-root th:nth-child(n+4),
+body.ext-s-battle-stats #ext-battle-stats-root td:nth-child(n+4) {
+    width: 70px;
+    min-width: 40px;
+}
+
+/* First column takes remaining space in fixed layout, min 120px */
+/* Headers should all be bold */
+body.ext-s-battle-stats #ext-battle-stats-root th {
+    font-weight: 600;
+}
+
+/* First column (Participant names) should be bold */
+body.ext-s-battle-stats #ext-battle-stats-root td:first-child {
+    font-weight: 600;
+}
+
+/* First column shared layout */
+body.ext-s-battle-stats #ext-battle-stats-root th:first-child,
+body.ext-s-battle-stats #ext-battle-stats-root td:first-child {
+    width: auto;
+    min-width: 120px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+body.ext-s-battle-stats #ext-battle-stats-root thead tr {
+    border-bottom: 1px solid var(--border);
+}
+
+body.ext-s-battle-stats #ext-battle-stats-root tbody tr {
+    border-bottom: 1px solid color-mix(in srgb, var(--border) 40%, transparent);
+}
+
+/* Remove border on last row */
+body.ext-s-battle-stats #ext-battle-stats-root tbody tr:last-child {
+    border-bottom: none !important;
+}
+
+/* Team color fallbacks */
+#ext-battle-stats-root green, #ext-battle-stats-root a:has(green)   { color: oklch(50.8% .118 165.612) !important; }
+#ext-battle-stats-root red, #ext-battle-stats-root a:has(red)     { color: oklch(50.5% .213 27.518) !important; }
+#ext-battle-stats-root blue, #ext-battle-stats-root a:has(blue)    { color: oklch(48.8% .243 264.376) !important; }
+#ext-battle-stats-root orange, #ext-battle-stats-root a:has(orange)  { color: oklch(66.6% .179 58.318) !important; }
+
+html.dark #ext-battle-stats-root green, html.dark #ext-battle-stats-root a:has(green)   { color: oklch(59.6% .145 163.225) !important; }
+html.dark #ext-battle-stats-root red, html.dark #ext-battle-stats-root a:has(red)     { color: oklch(44.4% .177 26.899) !important; }
+html.dark #ext-battle-stats-root blue, html.dark #ext-battle-stats-root a:has(blue)    { color: oklch(48.8% .243 264.376) !important; }
+html.dark #ext-battle-stats-root orange, html.dark #ext-battle-stats-root a:has(orange)  { color: oklch(55.5% .163 48.998) !important; }
+
+/* Row hover effect */
+body.ext-s-battle-stats.ext-s-battle-stats-hover-popup #ext-battle-stats-root tbody tr.ext-battle-stats-row:hover {
+    background-color: rgba(228, 207, 150, 0.20) !important;
+}
+
+/* Tooltip styles */
+.ext-stats-tooltip {
+    position: fixed;
+    z-index: 10000;
+    padding: 8px 12px;
+    background: #ffffff;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15), 0 4px 10px rgba(0, 0, 0, 0.1);
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.1s ease-in-out;
+    font-size: 0.8rem;
+    color: #111827;
+    width: 210px;
+}
+
+.ext-stats-tooltip.visible {
+    opacity: 1;
+}
+
+.ext-stats-tooltip .tooltip-name {
+    font-weight: 700;
+    font-size: 0.9rem;
+    margin-bottom: 8px;
+    padding-bottom: 6px;
+    border-bottom: 1px solid var(--border);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    color: #111827;
+}
+
+.ext-stats-tooltip .tooltip-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 0;
+    padding: 2px 0;
+    border-bottom: 1px solid color-mix(in srgb, var(--border) 30%, transparent);
+}
+
+.ext-stats-tooltip .tooltip-row:last-child {
+    border-bottom: none;
+}
+
+.ext-stats-tooltip .label {
+    font-weight: 500;
+    color: #4b5563;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    flex: 1;
+    min-width: 0;
+}
+
+.ext-stats-tooltip .value {
+    font-weight: 700;
+    color: #111827;
+    flex-shrink: 0;
+}
+
+/* Battle report actions */
+.ext-battle-header-wrapper h1 {
+    margin: 0 !important;
+}
+
+.ext-battle-report-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.ext-battle-report-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: 1.75rem;
+    padding: 0 0.625rem;
+    font-size: 0.8rem;
+    font-weight: 500;
+    border-radius: 0.375rem;
+    background-color: transparent !important;
+    border: none !important;
+    color: var(--secondary-foreground);
+    opacity: 0.45;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    cursor: pointer;
+    white-space: nowrap;
+}
+
+.ext-btn-content {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.ext-battle-report-btn:hover {
+    opacity: 1;
+    background-color: color-mix(in srgb, var(--secondary) 20%, transparent) !important;
+    color: var(--secondary-foreground);
+}
+
+.ext-battle-report-btn:active {
+    transition: none !important;
+    background-color: color-mix(in srgb, var(--secondary) 30%, transparent) !important;
+    transform: translateY(0);
+}
+
+html.dark .ext-battle-report-btn:hover {
+    background-color: color-mix(in srgb, var(--secondary) 25%, transparent) !important;
+}
+ 
+.ext-battle-report-btn.ext-active {
+    opacity: 1;
+    color: oklch(0.7 0.2 100);
+}
+
+.ext-battle-report-btn i {
+    /* Only add margin if there's text after it */
+}
+
+.ext-battle-report-btn i:not(:only-child) {
+    margin-right: 0.375rem;
+}
+
+.ext-battle-report-btn.ext-btn-icon-only {
+    width: 1.75rem;
+    padding: 0;
+}
+.ext-winner-highlight {
+    border-color: oklch(0.7 0.2 100 / 0.6) !important;
+    box-shadow: 0 0 20px oklch(0.7 0.2 100 / 0.15) !important;
+    background-color: oklch(0.7 0.2 100 / 0.05) !important;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.ext-winner-trophy {
+    color: oklch(0.7 0.2 100);
+}
+
+/* Fix gap in underline for navigation links on match report */
+body.ext-s-battle-report-scroll-bottom .content button[data-variant="link"].hover\:underline {
+    position: relative;
+}
+
+body.ext-s-battle-report-scroll-bottom .content button[data-variant="link"].hover\:underline:hover {
+    text-decoration: none !important;
+}
+
+body.ext-s-battle-report-scroll-bottom .content button[data-variant="link"].hover\:underline:hover::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0.45rem; /* Base position for bottom links */
+    height: 1px;
+    background-color: currentColor;
+    pointer-events: none;
+}
+
+/* Move underline 1px up for top buttons specifically */
+body.ext-s-battle-report-scroll-bottom .content .ext-battle-report-top-actions button[data-variant="link"].hover\:underline:hover::after {
+    bottom: calc(0.45rem + 1px);
+}

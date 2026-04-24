@@ -1,0 +1,541 @@
+/* --- Nav feature visibility owners ---
+   Each sidebar feature owns its own hide-class. CSS-based so inline-style
+   conflicts between features (merge vs. badges vs. hide-empty vs. cooldowns)
+   can't unhide an element behind another feature's back. */
+.ext-merged-source,
+.ext-wrapper-empty-merge,
+.ext-wrapper-empty-auto,
+.ext-badge-hidden,
+.ext-simplified-orig,
+.ext-cd-hidden,
+.ext-cd-wrapper-empty {
+  display: none !important;
+}
+
+/* Hide scroll bars — scoped to html/body and known scrollable containers
+   instead of a universal descendant selector, which the style engine would
+   otherwise evaluate against every element on the page. */
+html:has(body.ext-s-hide-scrollbars)::-webkit-scrollbar,
+body.ext-s-hide-scrollbars::-webkit-scrollbar,
+body.ext-s-hide-scrollbars .content::-webkit-scrollbar,
+body.ext-s-hide-scrollbars .sidebar::-webkit-scrollbar,
+body.ext-s-hide-scrollbars [class*="overflow"]::-webkit-scrollbar,
+.scrollbar-none::-webkit-scrollbar {
+  display: none;
+}
+html:has(body.ext-s-hide-scrollbars),
+body.ext-s-hide-scrollbars,
+body.ext-s-hide-scrollbars .content,
+body.ext-s-hide-scrollbars .sidebar,
+body.ext-s-hide-scrollbars [class*="overflow"],
+.scrollbar-none {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* Remove top bar */
+body.ext-s-remove-top-bar .notice {
+  display: none !important;
+}
+body.ext-s-remove-top-bar .mt-2 {
+  margin-top: 0 !important;
+}
+
+/* Make sidebars not too long */
+body.ext-s-hide-scrollbars .sidebar {
+  height: 100vh !important;
+  padding-bottom: 0 !important;
+}
+
+/* Remove extra info in item window */
+body.ext-s-hide-item-info div.w-full.mb-2 > span + small.block {
+  display: none !important;
+}
+body.ext-s-hide-item-info div.w-full.mb-2 > div > span + small.block,
+body.ext-s-hide-item-info div.w-full.mb-2 > div > small.block.mt-1 {
+  display: none !important;
+}
+
+/* Move passive settings link into avatar nav panel */
+.ext-passive-move-link { display: none !important; }
+body.ext-s-merge-passive .ext-panel-passiva { display: none !important; }
+body.ext-s-merge-passive .ext-passive-move-link:not(.ext-rpc-hidden) { display: list-item !important; }
+
+/* Full-height center content */
+body.ext-s-full-height .content { min-height: 100vh; }
+
+/* Hide Efterfrågningar sub-link under Auktioner (replaced by tabs on the auctions/buy-orders pages) */
+body.ext-s-add-buy-orders-tab .sidebar li:has(> a[href="/game/market/buy-orders"]) {
+  display: none !important;
+}
+
+/* Hide the native Vue/Reka tab list when our custom tab bar is present as a sibling */
+body.ext-s-add-buy-orders-tab .ext-tab-bar ~ [data-slot="tabs-list"] {
+  display: none !important;
+}
+
+/* Hide Topplistor sub-link under Rankade lagspel */
+body.ext-s-hide-ranked-toplists li:has(> a[href="/game/arena/ranked/toplists"]) {
+  display: none !important;
+}
+
+/* Hide "Ändra menystruktur" button */
+body.ext-s-hide-menu-editor .sidebar nav > div:has(.fa-cog) {
+  display: none !important;
+}
+
+/* Hide Pågående arbeten sub-list under Verkstad (main link is redirected via JS) */
+body.ext-s-redirect-workshop a[href="/game/market/craft"] + ul {
+  display: none !important;
+}
+
+/* Disable pulsing animation on badges */
+body.ext-s-no-badge-pulse .badge-notify {
+  animation: none !important;
+}
+
+/* Hide badges on section headers, keep them on links */
+body.ext-s-hide-section-badges [data-slot="collapsible-trigger"] .badge-notify {
+  display: none !important;
+}
+
+/* Hide badge on Utmaningar link */
+body.ext-s-hide-challenges-badge a[href="/game/arena/challenges"] .badge-notify {
+  display: none !important;
+}
+
+/* Hide "Markera X som lästa" buttons on the challenges page */
+body.ext-s-hide-challenges-badge .content .pb-4 > button.text-xxs,
+body.ext-s-hide-challenges-badge .content .pb-4 > [data-slot="button"][data-variant="secondary"] {
+  display: none !important;
+}
+
+/* Sidebar: Truncate long names */
+body.ext-s-truncate-sidebar-names .sidebar-panel-highlight p.font-semibold,
+body.ext-s-truncate-sidebar-names .ext-panel-avatar-nav p.section-kicker:not(.ext-rpc-kicker) {
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  display: block;
+}
+
+/* Sidebar: Disable text selection */
+body.ext-s-sidebar-no-select .sidebar,
+body.ext-s-sidebar-no-select .sidebar-panel {
+  user-select: none !important;
+}
+
+/* Sidebar: Hide question mark icons */
+body.ext-s-hide-sidebar-tooltips .sidebar-panel .v-popper:has(.fa-question-circle) {
+  display: none !important;
+}
+
+/* Sidebar Toggles (KP/EP/SM and Challenge Ready) */
+body.ext-s-hide-sidebar-info-toggle .sidebar-panel-highlight div:has(> label[for="hide_info"]) {
+  display: none !important;
+}
+
+body.ext-s-hide-sidebar-challenge-toggle .sidebar-panel-highlight div:has(> label[for="challenge_ready"]) {
+  display: none !important;
+}
+
+/* Ensure border/padding remains if only challenge toggle is visible */
+body.ext-s-hide-sidebar-info-toggle:not(.ext-s-hide-sidebar-challenge-toggle) .sidebar-panel-highlight div:has(> label[for="challenge_ready"]) {
+  border-top-width: 1px;
+  border-color: var(--border);
+  margin-top: 0.75rem !important; /* mt-3 */
+  padding-top: 1rem !important;    /* pt-4 */
+}
+
+/* Challenge warning icon in sidebar */
+.ext-challenge-warning {
+  position: relative;
+  z-index: 1; /* Ensures the ::after stays above the link background */
+  color: oklch(0.6 0.18 25) !important;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  animation: ext-pulse-warning 2s infinite;
+  font-size: 1rem;
+  margin-left: auto;
+  margin-right: 0.25rem;
+}
+
+.ext-challenge-warning::after {
+  content: "";
+  position: absolute;
+  width: 2.2px;
+  height: 55%;
+  background: var(--background);
+  z-index: -1;
+  top: 58%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+@keyframes ext-pulse-warning {
+  0%, 100% { opacity: 0.8; transform: scale(0.95); }
+  50% { opacity: 1; transform: scale(1.1); }
+}
+
+/* Disable pulse if requested */
+body.ext-s-no-badge-pulse .ext-challenge-warning {
+  animation: none !important;
+  opacity: 1 !important;
+  transform: none !important;
+}
+
+/* Database sidebar link — hidden unless show-database is on */
+.ext-database-link { display: none !important; }
+body.ext-s-show-database .ext-database-link:not(.ext-rpc-hidden) { display: list-item !important; }
+
+/* Notifications sidebar link — hidden unless show-notifications-log is on */
+.ext-notifications-link { display: none !important; }
+body.ext-s-show-notifications-log .ext-notifications-link:not(.ext-rpc-hidden) { display: list-item !important; }
+
+/* Mark own gladiator */
+body.ext-s-mark-gladiator .battle-text span.underline {
+  font-weight: bold;
+  text-decoration: none;
+  text-shadow: 0 0 1px rgba(0, 0, 0, 0.2);
+}
+
+/* Compact spacing on info page */
+body.ext-s-info-compact-spacing .content:not(#ext-panel) .section-kicker {
+  margin-bottom: 2px !important;
+}
+body.ext-s-info-compact-spacing .content:not(#ext-panel) .section-kicker.mt-2 {
+  margin-top: 24px !important;
+}
+
+/* Settings Hierarchy Lines & Animations */
+.ext-nested-container {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.3s ease-out, opacity 0.3s ease-out;
+  opacity: 0;
+  overflow: hidden; /* Needed for height animation */
+}
+
+.ext-nested-container.expanded {
+  grid-template-rows: 1fr;
+  opacity: 1;
+  margin-top: 1px !important; /* Adjusted to keep 5px gap when line starts at top: 0 */
+  margin-bottom: 2px;
+  overflow: visible; /* Allow tree lines to show once expanded */
+}
+
+.ext-nested-content {
+  min-height: 0;
+  padding-left: 1.5rem;
+  margin-left: 8px;
+  display: grid;
+  grid-template-columns: auto auto;
+  column-gap: 0.5rem;
+  row-gap: 2px;
+  align-items: center;
+  width: fit-content;
+}
+
+/* display:contents lets children become direct grid items of .ext-nested-content
+   so all labels share column 1 and all controls share column 2 */
+.ext-tree-item-row {
+  display: contents;
+}
+
+/* Labels stretch full row height so pseudo-elements span correctly */
+.ext-tree-item-row label {
+  position: relative;
+  align-self: stretch;
+  display: flex;
+  align-items: center;
+  padding: 2px 0;
+}
+
+/* L-shape: vertical from row top to midpoint, then horizontal branch */
+.ext-tree-item-row label::before {
+  content: "";
+  position: absolute;
+  left: -1.5rem;
+  top: 0;
+  height: 50%;
+  width: 1rem;
+  border-left: 1px solid rgba(127, 102, 60, 0.4);
+  border-bottom: 1px solid rgba(127, 102, 60, 0.4);
+}
+
+.ext-tree-item-row:not(:last-child) label::after {
+  content: "";
+  position: absolute;
+  left: -1.5rem;
+  top: 50%;
+  bottom: 0;
+  border-left: 1px solid rgba(127, 102, 60, 0.4);
+}
+
+.dark .ext-tree-item-row label::before,
+.dark .ext-tree-item-row:not(:last-child) label::after {
+  border-color: rgba(255, 210, 140, 0.2);
+}
+
+/* General sub-setting group (non-cooldown) */
+.ext-sub-content {
+  display: flow-root; /* Prevent margin collapsing from children like checkbox mt-0.5 */
+  min-height: 0;
+  margin-left: 8px;
+}
+
+.ext-sub-item {
+  position: relative;
+  padding-left: 1.5rem;
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+}
+
+.ext-sub-item label {
+  margin-top: 0 !important;
+}
+
+.ext-sub-item .ext-toggle-group-row,
+.ext-sub-item .ext-select-standalone {
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+}
+
+.ext-sub-item::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 50%;
+  width: 1rem;
+  border-left: 1px solid rgba(127, 102, 60, 0.4);
+  border-bottom: 1px solid rgba(127, 102, 60, 0.4);
+}
+
+.ext-sub-item:not(:last-child)::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 50%;
+  bottom: 0;
+  border-left: 1px solid rgba(127, 102, 60, 0.4);
+}
+
+.dark .ext-sub-item::before,
+.dark .ext-sub-item:not(:last-child)::after {
+  border-color: rgba(255, 210, 140, 0.2);
+}
+
+/* Parent setting chevron indicator */
+.ext-chevron {
+  flex-shrink: 0;
+  opacity: 0.3;
+  transition: transform 0.2s ease, opacity 0.2s ease;
+}
+.ext-chevron.expanded {
+  transform: rotate(90deg);
+  opacity: 0.5;
+}
+
+/* Sub-section label inside a nested settings group */
+.ext-sub-section-label {
+  padding: 6px 0 2px 1.5rem;
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--muted-foreground);
+  margin-top: 2px;
+}
+
+/* Stop the tree line from the last item in a group from continuing into the sub-section label */
+.ext-sub-item:has(+ .ext-sub-section-label)::after {
+  display: none;
+}
+
+/* Right panel collapse: hidden link — needs !important to override existing !important display rules */
+.ext-rpc-hidden { display: none !important; }
+
+/* Right panel collapsible section headers */
+.ext-rpc-kicker {
+  display: flex !important;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  user-select: none;
+}
+.ext-rpc-text {
+  min-width: 0;
+  flex: 1;
+}
+body.ext-s-truncate-sidebar-names .ext-rpc-text {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.ext-rpc-chevron {
+  flex-shrink: 0;
+  opacity: 0.45;
+  transition: transform 0.2s ease, opacity 0.2s ease;
+}
+.ext-rpc-kicker:hover .ext-rpc-chevron {
+  opacity: 0.8;
+}
+.ext-rpc-chevron.ext-rpc-collapsed {
+  transform: rotate(-90deg);
+}
+
+/* Settings page layout */
+.ext-settings-group {
+  padding-left: 5px;
+}
+.ext-toggle-group-row {
+  display: grid;
+  grid-template-columns: auto auto;
+  column-gap: 0.75rem;
+  align-items: center;
+}
+.ext-select-panel {
+  position: absolute;
+  left: 0;
+  z-index: 50;
+  background-color: white;
+  border: 1px solid var(--border);
+  border-radius: 0.5rem;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  padding: 0.25rem;
+  animation: ext-dropdown-enter 0.15s ease-out;
+  white-space: nowrap;
+}
+
+[data-ext-select] > span {
+  white-space: nowrap;
+}
+.dark .ext-select-panel {
+  background-color: var(--card);
+}
+
+@keyframes ext-dropdown-enter {
+  from { opacity: 0; transform: translateY(-4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.ext-select-standalone {
+  margin-bottom: 2px;
+}
+
+.ext-dropdown-hover {
+  transition: none !important;
+}
+.ext-dropdown-hover:hover {
+  background-color: #e4d8c0 !important;
+}
+.dark .ext-dropdown-hover:hover {
+  background-color: rgba(255, 255, 255, 0.08) !important;
+}
+
+.ext-multiselect-header {
+  padding: 5px 10px 4px;
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--muted-foreground);
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 3px;
+  cursor: default;
+  user-select: none;
+}
+
+/* Tournament info: align key/value pairs in two columns */
+@media (min-width: 1000px) {
+  body.ext-s-tournament-info-layout .ext-info-col {
+    display: grid;
+    grid-template-columns: minmax(0, max-content) minmax(70px, 1fr);
+    column-gap: 5px;
+    row-gap: 2px;
+    align-content: start;
+    padding-right: 12px;
+  }
+
+  body.ext-s-tournament-info-layout .ext-info-col + .ext-info-col {
+    border-left: 1px solid oklch(from var(--border) l c h / .3);
+    padding-left: 12px;
+  }
+
+  body.ext-s-tournament-info-layout .ext-info-col > p {
+    display: contents;
+  }
+
+  body.ext-s-tournament-info-layout .ext-info-col > p > span.font-semibold {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    min-width: 0;
+  }
+
+  body.ext-s-tournament-info-layout .ext-info-col > p > .ext-info-val {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    min-width: 0;
+    text-transform: lowercase;
+  }
+
+  body.ext-s-tournament-info-layout .ext-info-col > p > .ext-info-val::first-letter {
+    text-transform: uppercase;
+  }
+
+  /* Prevent Tailwind's capitalize class from uppercasing each word */
+  body.ext-s-tournament-info-layout .ext-info-col > p > .ext-info-val .capitalize {
+    text-transform: inherit;
+  }
+
+  /* Small gap before question mark tooltip icons */
+  body.ext-s-tournament-info-layout .ext-info-col > p > .ext-info-val .v-popper {
+    margin-left: 3px;
+  }
+}
+
+/* Gap between key and value in prize/result rows outside the column layout */
+body.ext-s-tournament-info-layout .gap-y-4 > div:not(.ext-info-col) > p > span.font-semibold + span {
+  margin-left: 5px;
+}
+
+/* Results section: stack gladiator/beast names vertically */
+body.ext-s-tournament-info-layout .ext-result-names {
+  display: flex;
+  flex-direction: column;
+}
+
+body.ext-s-tournament-info-layout .ext-result-entry {
+  display: flex;
+  align-items: baseline;
+  gap: 0.4em;
+}
+
+body.ext-s-tournament-info-layout .ext-result-bullet {
+  flex-shrink: 0;
+}
+
+/* Toggle-group segment buttons */
+.ext-toggle-btn {
+  padding: 4px;
+  border-radius: 6px;
+  transition: color 0.15s ease, background-color 0.15s ease, box-shadow 0.15s ease;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+}
+.ext-toggle-btn:not(.active) {
+  color: rgba(0, 0, 0, 0.28);
+}
+.ext-toggle-btn:not(.active):hover {
+  color: rgba(0, 0, 0, 0.6);
+}
+.dark .ext-toggle-btn:not(.active) {
+  color: rgba(255, 255, 255, 0.28);
+}
+.dark .ext-toggle-btn:not(.active):hover {
+  color: rgba(255, 255, 255, 0.6);
+}

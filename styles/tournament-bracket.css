@@ -1,0 +1,517 @@
+/* Tournament bracket */
+#ext-tournament-bracket {
+  user-select: none;
+  cursor: grab;
+  display: flex;
+  flex-direction: column;
+  padding: 4px 4px 16px;
+  cursor: default;
+  font-size: 11px;
+}
+
+.ext-bracket-row {
+  display: flex;
+  align-items: center;
+}
+
+.ext-bracket-bronze {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 14px;
+  padding-top: 10px;
+  border-top: 1px dashed var(--border);
+}
+
+.ext-bracket-bronze-label {
+  font-size: 10px;
+  color: var(--muted-foreground);
+  white-space: nowrap;
+  padding-right: 4px;
+}
+
+.ext-bracket-bronze .ext-bracket-card {
+  width: 164px;
+  flex-shrink: 0;
+}
+
+.ext-bracket-round {
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+}
+
+.ext-bracket-slot {
+  display: flex;
+  align-items: center;
+  box-sizing: border-box;
+  flex-shrink: 0;
+}
+
+.ext-bracket-card-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+}
+
+.ext-bracket-round-label {
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  margin-bottom: 4px;
+  white-space: nowrap;
+  pointer-events: none;
+  font-size: 0.85rem;
+  color: var(--muted-foreground);
+}
+
+.ext-bracket-round-label-static {
+  position: static;
+  transform: none;
+  left: auto;
+  bottom: auto;
+  text-align: center;
+  width: 100%;
+  margin-bottom: 6px;
+}
+
+.ext-bracket-bronze-card-wrapper {
+  flex-direction: column;
+  padding-top: 4px;
+}
+
+.ext-bracket-card {
+  width: 100%;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  overflow: hidden;
+  /* background: var(--card); */
+  background: #fbf7f386;
+}
+
+.ext-bracket-clickable {
+  cursor: pointer;
+  pointer-events: none;
+}
+
+/* Player is a non-interactive wrapper; gladiator rows and divider right zone are the interactive zones */
+.ext-bracket-clickable .ext-bracket-player {
+  pointer-events: none;
+}
+.ext-bracket-clickable .ext-bracket-gladiator,
+.ext-bracket-clickable .ext-bracket-divider-r {
+  pointer-events: auto;
+}
+
+.ext-bracket-clickable:has(.ext-bracket-gladiator:hover, .ext-bracket-divider-r:hover):not(:has(.ext-preview-icon-wrap:hover)):not(:has(.ext-bracket-beast-block:hover)):not(:has(.ext-bracket-name:hover)) {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.ext-bracket-player {
+  padding: 0 5px;
+  min-height: 18px;
+  overflow: hidden;
+}
+
+/* Breathing room: applied when no dead zone div displaces the first/last-child selector */
+.ext-bracket-player > .ext-bracket-gladiator:first-child {
+  padding-top: 3px;
+}
+.ext-bracket-player > .ext-bracket-gladiator:last-child {
+  padding-bottom: 3px;
+}
+
+.ext-bracket-name-wrap {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  align-items: stretch;
+}
+
+.ext-bracket-name {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+  overflow: hidden;
+  color: var(--foreground);
+  text-decoration: none;
+  margin-top: -1px;
+}
+
+.ext-bracket-name > span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  min-width: 0;
+}
+
+.ext-bracket-star {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  font-size: 9px;
+  color: #facc15;
+  margin-left: 3px;
+  margin-top: 3px;
+}
+
+.ext-bracket-level {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  white-space: nowrap;
+  color: var(--muted-foreground);
+  font-size: 10px;
+  margin-bottom: 1px;
+  margin-left: 3px;
+}
+
+a.ext-bracket-name:hover {
+  color: var(--primary);
+  text-decoration: underline;
+}
+
+
+.ext-bracket-divider {
+  height: 1px;
+  background: var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.ext-bracket-score {
+  position: absolute;
+  background: var(--card);
+  padding: 0 3px;
+  font-size: 9px;
+  color: var(--muted-foreground);
+  white-space: nowrap;
+  line-height: 1;
+}
+
+.ext-bracket-loser {
+  opacity: 0.6;
+}
+
+.ext-bracket-loser .ext-bracket-name,
+.ext-bracket-loser .ext-bracket-gladiator a {
+  text-decoration: line-through;
+}
+
+.ext-bracket-tom {
+  color: var(--muted-foreground);
+  font-style: italic;
+  justify-content: center;
+}
+
+.ext-bracket-conn {
+  flex-shrink: 0;
+}
+
+.ext-bracket-conn path {
+  fill: none;
+  stroke-linecap: butt;
+  stroke-linejoin: miter;
+  shape-rendering: crispEdges;
+}
+.ext-bracket-conn-line {
+  stroke: var(--border);
+  stroke-width: 2;
+}
+
+
+.ext-bracket-gladiator {
+  font-size: 12px;
+  line-height: 1.5;
+  display: flex;
+  align-items: stretch;
+  gap: 0;
+  position: relative;
+}
+
+.ext-bracket-beast-block {
+  flex-shrink: 0;
+  width: 13px; /* same footprint as icon-wrap: 11px icon + 2px padding-right */
+  cursor: default;
+}
+
+.ext-bracket-gladiator-edge-r {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 5px;
+  right: -5px;
+}
+
+.ext-bracket-edge-block-top {
+  position: absolute;
+  bottom: 100%;
+  height: 3px;
+  left: 0;
+  right: 0;
+}
+
+.ext-bracket-dead-zone {
+  height: 3px;
+  /* pointer-events: none inherited from .ext-bracket-player — absorbs no events */
+}
+
+.ext-bracket-divider-r {
+  position: absolute;
+  left: 50%;
+  right: 0;
+  top: -3px;
+  bottom: -3px;
+}
+
+.ext-bracket-divider-block-l {
+  position: absolute;
+  left: 0;
+  width: 50%;
+  height: 7px;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: auto;
+  cursor: default;
+  z-index: 1;
+}
+
+.ext-bracket-gladiator a {
+  color: var(--foreground);
+  text-decoration: none;
+}
+
+.ext-bracket-gladiator a:hover {
+  color: var(--primary);
+  text-decoration: underline;
+}
+
+#ext-preview-tooltip {
+  display: none;
+  position: fixed;
+  z-index: 9999;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  padding: 6px 9px;
+  font-size: 11px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.25);
+  min-width: 150px;
+  max-width: 260px;
+  pointer-events: none;
+  transform: translateY(-100%) translateY(-6px);
+}
+
+#ext-preview-tooltip.ext-preview-visible {
+  display: block;
+}
+
+.ext-preview-icon-wrap {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+  cursor: pointer;
+  padding-right: 2px;
+  position: relative;
+}
+
+.ext-preview-icon {
+  flex-shrink: 0;
+  display: block;
+  color: var(--muted-foreground);
+  opacity: 0.6;
+}
+
+.ext-preview-loading {
+  color: var(--muted-foreground);
+  text-align: center;
+}
+
+.ext-preview-title {
+  font-weight: 600;
+  color: var(--foreground);
+  margin-bottom: 5px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ext-preview-grid {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 2px 8px;
+  min-width: 0;
+}
+
+.ext-preview-label {
+  color: var(--muted-foreground);
+  white-space: nowrap;
+}
+
+.ext-preview-value {
+  color: var(--foreground);
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-width: 0;
+}
+
+#ext-reports-menu {
+  display: none;
+  position: fixed;
+  z-index: 9998;
+  flex-direction: column;
+  gap: 2px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  padding: 4px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.25);
+  min-width: 120px;
+}
+
+#ext-reports-menu.ext-reports-menu-visible {
+  display: flex;
+}
+
+.ext-reports-menu-item {
+  padding: 4px 8px;
+  border-radius: 3px;
+  font-size: 11px;
+  color: var(--foreground);
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.ext-reports-menu-item:hover {
+  background: var(--muted);
+}
+
+/* --- Tournament schedule: Layout 1 (original-style colors, FA preview icon) --- */
+.ext-bracket-v1 .ext-bracket-card {
+  border-color: rgb(156 163 175); /* Tailwind gray-400, matches original */
+  background: transparent;
+}
+
+/* Ensure consistent 18px row heights by moving first/last-child padding to the container.
+   This prevents baseline shifts that cause inconsistent underline gaps in Layout 1. */
+.ext-bracket-v1 .ext-bracket-player {
+  padding-top: 3px;
+  padding-bottom: 3px;
+}
+.ext-bracket-v1 .ext-bracket-player:first-child {
+  padding-top: 0;
+}
+.ext-bracket-v1 .ext-bracket-player:last-child {
+  padding-bottom: 0;
+}
+.ext-bracket-v1 .ext-bracket-player > .ext-bracket-gladiator:first-child,
+.ext-bracket-v1 .ext-bracket-player > .ext-bracket-gladiator:last-child {
+  padding-top: 0;
+  padding-bottom: 0;
+}
+
+.ext-bracket-v1 .ext-bracket-gladiator {
+  align-items: center;
+}
+
+.ext-bracket-v1 .ext-bracket-name,
+.ext-bracket-v1 .ext-bracket-gladiator a {
+  color: var(--primary);
+}
+
+.ext-bracket-v1 .ext-preview-icon-fa {
+  font-size: 11px;
+  line-height: 1;
+  color: var(--foreground);
+}
+
+.ext-bracket-v1 .ext-bracket-conn-line {
+  stroke: rgb(107 114 128); /* gray-500, darker than card border */
+}
+
+.ext-bracket-v1 .ext-bracket-divider {
+  background: rgb(156 163 175);
+}
+
+.ext-bracket-v1 .ext-bracket-score {
+  background: white;
+  padding: 0 4px;
+}
+
+.ext-bracket-v1 .ext-bracket-name-wrap {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+}
+
+.ext-bracket-v1 .ext-bracket-name {
+  height: 18px; /* Fixed height anchor for underline */
+  display: flex;
+  align-items: center;
+  min-width: 0;
+  max-width: 100%;
+  position: relative;
+  z-index: 1;
+  text-decoration: none !important;
+}
+
+.ext-bracket-v1 .ext-bracket-name-text {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  min-width: 0;
+  flex: 0 1 auto;
+}
+
+.ext-bracket-v1 .ext-bracket-level {
+  color: inherit;
+  margin-left: -1px;
+}
+
+.ext-bracket-v1 .ext-bracket-star {
+  color: #facc15;
+  margin-left: 3px;
+  font-size: 9px;
+  margin-top: 0;
+}
+
+.ext-bracket-v1 .ext-bracket-loser {
+  opacity: 1;
+}
+
+.ext-bracket-v1 .ext-bracket-loser :is(.ext-bracket-name, a) {
+  text-decoration: none !important;
+}
+
+.ext-bracket-v1 .ext-bracket-name:hover::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 3px; /* Moved 1px further down for requested spacing */
+  height: 1px;
+  background-color: currentColor;
+  z-index: -1;
+}
+
+.ext-bracket-v1 .ext-bracket-loser :is(.ext-bracket-name-text, .ext-bracket-level) {
+  text-decoration: line-through !important;
+  text-decoration-color: var(--foreground);
+}
+
+.ext-bracket-v1 .ext-bracket-star {
+  text-decoration: none !important;
+  display: inline-block;
+}
+
+.ext-bracket-v1 .ext-bracket-loser a:hover :is(.ext-bracket-name-text, .ext-bracket-level) {
+  text-decoration: line-through !important;
+}
