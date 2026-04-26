@@ -7,7 +7,7 @@
 
     try {
       const context = await window.LanistaApp.getAppContext();
-      const { apiClient, getUserStore, getAvatarModule, getRouter, getCooldownModule } = context;
+      const { apiClient, getUserStore, getAvatarStore, getRouter, getCooldownStore } = context;
       const userStore = getUserStore();
       const router = getRouter();
 
@@ -36,10 +36,10 @@
         }
       }
 
-      // Step 4: Refresh avatar module state (needed for gear/stats pages)
-      const avatarModule = getAvatarModule();
-      if (avatarModule && userStore?.avatar?.id) {
-        await avatarModule.fetchAvatar(userStore.avatar.id);
+      // Step 4: Refresh avatar store state (needed for gear/stats pages)
+      const avatarStore = getAvatarStore();
+      if (avatarStore && userStore?.avatar?.id) {
+        await avatarStore.fetchAvatar(userStore.avatar.id);
       }
 
       // Step 5: If user is on the Dailies page, force a re-mount to show fresh state
@@ -47,16 +47,16 @@
       const currentRoute = router?.currentRoute?.value || router?.currentRoute;
       const currentPath = currentRoute?.path || "";
 
-      if (router && currentPath.includes("/arena/dailies")) {
+      if (router && (currentPath.includes("/arena/dailies") || currentPath.includes("/arena/tournaments") || currentPath.includes("/arena/dailybattles"))) {
         // We navigate away and then back
         await router.push("/arena");
         await router.replace(currentPath);
       }
 
       // Step 6: Trigger building/cooldown refresh in the sidebar
-      const cooldownModule = getCooldownModule();
-      if (cooldownModule) {
-        const { fetchCooldowns, loaded } = cooldownModule;
+      const cooldownStore = getCooldownStore();
+      if (cooldownStore) {
+        const { fetchCooldowns, loaded } = cooldownStore;
         loaded.value = false;
         await fetchCooldowns();
       }
@@ -76,9 +76,8 @@
 
       const currentRoute = router.currentRoute?.value || router.currentRoute;
       const path = currentRoute?.fullPath || currentRoute?.path;
-      
+
       if (path) {
-        // Use router.replace instead of history.replaceState to ensure Vue is in sync
         router.replace(path);
       }
     } catch (err) {

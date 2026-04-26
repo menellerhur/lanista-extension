@@ -8,8 +8,20 @@
 .ext-badge-hidden,
 .ext-simplified-orig,
 .ext-cd-hidden,
-.ext-cd-wrapper-empty {
+.ext-cd-wrapper-empty,
+.ext-ranked-hidden {
   display: none !important;
+}
+
+/* Hide Grupper section when ranked-battles link is rerouted to its modal */
+body.ext-s-link-rankedbattles-to-mygroup .ext-panel-grupper {
+  display: none !important;
+}
+
+/* Right panel: reduce top padding (game default is py-3 = 12px) */
+body.ext-s-right-panel-reduce-padding .sidebar > aside {
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
 }
 
 /* Hide scroll bars — scoped to html/body and known scrollable containers
@@ -354,6 +366,12 @@ body.ext-s-info-compact-spacing .content:not(#ext-panel) .section-kicker.mt-2 {
   display: none;
 }
 
+/* Connector line correction for the enable/disable-all buttons row (21px height) */
+.ext-sub-item:has(#ext-btn-enable-all)::before {
+  height: calc(50% + 1px);
+}
+
+
 /* Right panel collapse: hidden link — needs !important to override existing !important display rules */
 .ext-rpc-hidden { display: none !important; }
 
@@ -539,3 +557,42 @@ body.ext-s-tournament-info-layout .ext-result-bullet {
 .dark .ext-toggle-btn:not(.active):hover {
   color: rgba(255, 255, 255, 0.6);
 }
+
+/* Gladiatorstall settings */
+body.ext-s-hide-active-gladiator .ext-panel-gladiatorstall > div.pointer-events-none {
+  display: none !important;
+}
+
+body.ext-s-hide-active-gladiator .ext-panel-gladiatorstall > div.cursor-pointer {
+  padding-bottom: 0 !important;
+  margin-bottom: 0 !important;
+  border-bottom: none !important;
+}
+
+body.ext-s-hide-stable-header .ext-panel-gladiatorstall > a.sidebar-nav-link {
+  display: none !important;
+}
+
+body.ext-s-hide-stable-header .ext-panel-gladiatorstall {
+  padding-top: 8px !important;
+  padding-bottom: 7px !important;
+}
+
+body.ext-s-increase-stable-name-width .ext-panel-gladiatorstall > div.justify-between > span.w-20 {
+  width: auto !important;
+  flex: 1;
+  min-width: 0;
+  padding-right: 4px;
+}
+
+.ext-panel-gladiatorstall img {
+  max-height: 20px !important;
+}
+
+/* Move daily EP closer to EP bar */
+body.ext-s-move-ep-closer .sidebar-panel p:has(> a[href*="experiencelog"]) {
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: flex-end !important;
+}
+

@@ -71,6 +71,17 @@ document.addEventListener("click", e => {
   if (link === getExtensionLink() || link === getDatabaseLink() || link === getNotificationsLink()) return;
   const href = link.getAttribute ? link.getAttribute("href") : null;
   if (href === "javascript:void(0)" || href === "") return;
+
+  // Rankade lagspel → Min grupp modal: the click is intercepted by nav/ranked-battle.js
+  // (no actual navigation happens) so we must keep the extension page visible.
+  if (href === "/game/arena/rankedbattles"
+      && e.button === 0 && !e.ctrlKey && !e.metaKey && !e.shiftKey
+      && document.body.classList.contains("ext-s-link-rankedbattles-to-mygroup")
+      && !document.body.classList.contains("ext-s-rankedbattles-sublink")
+      && document.querySelector(".ext-panel-grupper button")) {
+    return;
+  }
+
   hideCustomPage();
 }, true);
 

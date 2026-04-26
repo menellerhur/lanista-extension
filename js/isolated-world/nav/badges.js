@@ -1,27 +1,23 @@
-// Nav badge tracking — state, API handlers, and badge/visibility rendering.
+// Nav badge tracking — state, badge/visibility rendering.
+// Avatar-derived badge state (daily_beasts, unseen_adventures, active id) is
+// pushed in via ext:badge-data and ext:active-avatar from main-world/store-bridge.js.
+// Daily quest data still comes from /api/avatars/me/daily — that endpoint is not
+// reflected in the user store.
 // Depends on: api-handler.js (apiRegisterHandler, apiGetCacheByPattern)
 // Reads: _navSettings (var defined in nav/enhancements.js)
 
 let _dailiesRemaining = null; // null = unknown; number = incomplete daily tasks
 let _beastsRemaining  = null; // null = unknown; number = beast fights left today
 let _unseenAdventures = null; // null = unknown; number = unseen adventures
-let _beastsDailyLimit = null; // from /api/config daily_beasts (fallback: 50)
 let _dailiesReqs      = null; // requirements map from /api/config/dailies
 let _latestDailyData  = null;
-let _activeAvatarId    = null; // track current gladiator to detect switches
+let _lastDailyBeasts  = null; // last raw daily_beasts count from store (used to recompute on limit change)
 let _navBadgeUpdating = false;
 
 const _NAV_BADGE_CLASS = "ext-nav-badge inline-flex items-center font-medium badge-notify h-5 min-w-5 justify-center rounded-full border border-primary/30 bg-primary/20 px-1.5 py-0 text-[10px] leading-5 text-primary ml-auto shrink-0";
 
 // --- API handlers ---
 
-// General game config — contains daily_beasts (daily beast fight quota)
-apiRegisterHandler(/\/api\/config$/, (_url, data) => {
-  if (data?.daily_beasts !== undefined) {
-    _beastsDailyLimit = parseInt(data.daily_beasts, 10) || null;
-    _updateNavBadges();
-  }
-});
 
 // Daily quest requirements (thresholds per task, UPPERCASE keys)
 apiRegisterHandler(/\/api\/config\/dailies/, (_url, data) => {
@@ -38,7 +34,7 @@ apiRegisterHandler(/\/api\/avatars\/me\/daily/, (_url, data) => {
   _recomputeDailies();
 });
 
-// AvatarDailyFinished relayed from MAIN-world socket-listener — 
+// AvatarDailyFinished relayed from MAIN-world socket-listener —
 // fetch fresh daily quest data to ensure the UI is in sync with the server.
 window.addEventListener("ext:avatar-daily-finished", () => {
   if (typeof _fetchAndDispatch === "function") {
@@ -54,26 +50,31 @@ apiRegisterHandler(/\/api\/avatars\/me\/adventures(\?|$)/, () => {
   _updateNavBadges();
 });
 
-// Update badge state from an avatar object (daily_beasts, unseen_adventures).
-// Called by nav/avatar-sync.js — the handler layer lives there.
-function _applyAvatarToBadges(avatar) {
-  if (!avatar) return;
+// --- Store bridge listeners ---
 
-  // Detect gladiator switch (id change) — invalidate daily quest state and refresh
-  if (avatar.id !== undefined && avatar.id !== _activeAvatarId) {
-    _activeAvatarId = avatar.id;
-    _latestDailyData = null;
-    _dailiesRemaining = null;
-  }
+// Reactive avatar fields (daily_beasts, unseen_adventures) from the Pinia user store.
+window.addEventListener("ext:badge-data", (e) => {
+  const { dailyBeasts, unseenAdventures } = e.detail || {};
 
-  if (avatar.daily_beasts !== undefined) {
-    const limit = _beastsDailyLimit ?? 50;
-    _beastsRemaining = Math.max(0, limit - avatar.daily_beasts);
+  if (dailyBeasts !== undefined) {
+    _lastDailyBeasts = dailyBeasts;
+    const limitStr = window.ExtConfig?.daily_beasts;
+    let limit = limitStr ? parseInt(limitStr, 10) : 50;
+    if (Number.isNaN(limit)) limit = 50;
+    _beastsRemaining = Math.max(0, limit - dailyBeasts);
   }
-  if (avatar.unseen_adventures !== undefined) {
-    _unseenAdventures = avatar.unseen_adventures;
+  if (unseenAdventures !== undefined) {
+    _unseenAdventures = unseenAdventures;
   }
-}
+  _updateNavBadges();
+});
+
+// Active gladiator changed — invalidate daily quest state. The daily endpoint is
+// per-gladiator and gets re-fetched by state-synchronizer.js on switch.
+window.addEventListener("ext:active-avatar", () => {
+  _latestDailyData = null;
+  _dailiesRemaining = null;
+});
 
 function _recomputeDailies() {
   if (!_latestDailyData) return;

@@ -48,6 +48,9 @@ function _positionTooltip(tooltip, anchorEl) {
 async function _showPreview(avatarId, anchorEl) {
   const tooltip = _getTooltipEl();
 
+  // Reset inline display: hideAllExtensionPopups() sets style.display="none" on
+  // navigation, which would otherwise win over the .ext-preview-visible class.
+  tooltip.style.display = '';
   tooltip.innerHTML = '<div class="ext-preview-loading">…</div>';
   tooltip.classList.add('ext-preview-visible');
   _positionTooltip(tooltip, anchorEl);

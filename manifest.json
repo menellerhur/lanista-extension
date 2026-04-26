@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
   "name": "Lanista Extension",
-  "version": "1.0",
-  "description": "Databas för utrustning, matchstatistik i tabellform, kompaktare turneringsschema och andra visuella justeringar.",
+  "version": "1.1",
+  "description": "Tillägg för spelet Lanista: https://beta.lanista.se/",
   "icons": {
     "16": "icons/icon16.png",
     "48": "icons/icon48.png",
@@ -23,6 +23,7 @@
         "js/main-world/app-connector.js",
         "js/main-world/socket-listener.js",
         "js/main-world/state-synchronizer.js",
+        "js/main-world/store-bridge.js",
         "js/main-world/router-observer.js",
         "js/main-world/bus-listener.js"
       ],
@@ -64,6 +65,9 @@
         "js/isolated-world/nav/simplify-community.js",
         "js/isolated-world/nav/cooldowns.js",
         "js/isolated-world/nav/avatar-sync.js",
+        "js/isolated-world/nav/tournament-times.js",
+        "js/isolated-world/nav/ranked-battle-time.js",
+        "js/isolated-world/nav/ranked-battle.js",
         "js/isolated-world/battle-report/manager.js",
         "js/isolated-world/battle-report/actions.js",
         "js/isolated-world/battle-report/stats.js",

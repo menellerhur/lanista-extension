@@ -34,7 +34,8 @@
     // --- Private Channel Events ---
 
     privateChannel.bind("App\\Events\\RankedBattleFinished", () => {
-      if (!document.body.classList.contains("ext-s-refresh-ranked-cooldown")) return;
+      if (!document.body.classList.contains("ext-s-refresh-ranked-cooldown") &&
+          !document.body.classList.contains("ext-s-hide-rankedbattles-on-cooldown")) return;
       userStore.fetchAvatar();
     });
 

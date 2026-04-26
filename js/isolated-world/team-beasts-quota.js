@@ -6,22 +6,28 @@
 // The API call is avoided once we know the daily limit is hit — the count is
 // cached in chrome.storage.local and only reset when the Swedish date rolls over.
 //
+// The daily_team_beasts limit is read from configModule via store-bridge (ext:config-data).
+//
 // Depends on: utils.js (swedishDateToday, swedishMidnightUTC, gameRequest),
 //             settings.js (loadSettings), api-handler.js (apiRegisterHandler).
 
 const _TB_QUOTA_CACHE_KEY = "team-beasts-quota";
 const _TB_QUOTA_ACTIVITY_URL = "/api/avatars/me/activity?query=lagspel%20(odjur)";
 const _TB_QUOTA_BATTLE_TYPE_TEAM_NPC = 9; // config.battle_types.TEAM_NPC
-const _TB_QUOTA_LIMIT_FALLBACK = 10;      // config.daily_team_beasts
+const _TB_QUOTA_LIMIT_FALLBACK = 10;      // fallback if ext:config-data hasn't fired yet
 
 let _tbQuotaSettings = {};
-let _tbQuotaLimit = null;     // from /api/config daily_team_beasts
 let _tbQuotaCount = null;     // battles played today (Swedish)
 let _tbQuotaDate = null;      // Swedish date for which _tbQuotaCount is valid
 let _tbQuotaAvatarId = null;  // avatar the cached count belongs to
 let _tbQuotaSynced = false;   // true once we've fetched the activity API today
 let _tbQuotaObs = null;
 let _tbQuotaFetching = false;
+let _activeAvatarIdCached = null; // pushed in via ext:active-avatar from store-bridge
+
+window.addEventListener("ext:active-avatar", e => {
+  _activeAvatarIdCached = e.detail?.id ?? null;
+});
 
 function _onTeambattlesOpenPage() {
   const p = location.pathname;
@@ -44,13 +50,7 @@ function _onTeambattlesOpenPage() {
   return false;
 }
 
-apiRegisterHandler(/\/api\/config(\?|$)/, (_url, data) => {
-  if (data?.daily_team_beasts !== undefined) {
-    const parsed = parseInt(data.daily_team_beasts, 10);
-    if (!Number.isNaN(parsed)) _tbQuotaLimit = parsed;
-    _renderTbQuota();
-  }
-});
+
 
 apiRegisterHandler(/\/api\/(users|avatars)\/me(\?|$)/, () => {
   if (_onTeambattlesOpenPage() && _tbQuotaSettings["show-team-beasts-quota"]) {
@@ -58,26 +58,18 @@ apiRegisterHandler(/\/api\/(users|avatars)\/me(\?|$)/, () => {
   }
 });
 
-// Looks up the currently active avatar's id from cached user/avatar API responses.
+// Returns the active avatar id. Primary source is the store-bridge event;
+// falls back to the API cache for the brief window before the bridge fires
+// on first load.
 function _getActiveAvatarId() {
-  // Always prioritize the singular "me" endpoints as they are guaranteed to be 
-  // fresh after a gladiator switch (fetched by state-synchronizer.js).
+  if (_activeAvatarIdCached) return _activeAvatarIdCached;
+
   const meAvatar = apiGetCacheByPattern(/\/api\/avatars\/me(\?|$)/);
   if (meAvatar?.id) return meAvatar.id;
 
   const userMe = apiGetCacheByPattern(/\/api\/users\/me(\?|$)/);
   if (userMe?.avatar?.id) return userMe.avatar.id;
 
-  // Fallback to the full list (which might be stale during transitions)
-  const avatars = apiGetCacheByPattern(/\/api\/users\/me\/avatars(\?|$)/);
-  if (Array.isArray(avatars)) {
-    const active = avatars.find(a => a.active === true);
-    if (active?.id) return active.id;
-  }
-  if (Array.isArray(userMe?.avatars)) {
-    const active = userMe.avatars.find(a => a.active === true);
-    if (active?.id) return active.id;
-  }
   return null;
 }
 
@@ -175,7 +167,8 @@ async function _syncFromActivity() {
 }
 
 function _effectiveLimit() {
-  return _tbQuotaLimit ?? _TB_QUOTA_LIMIT_FALLBACK;
+  const limitVal = window.ExtConfig?.daily_team_beasts;
+  return limitVal ? parseInt(limitVal, 10) : _TB_QUOTA_LIMIT_FALLBACK;
 }
 
 // Fetch activity only if we haven't yet confirmed the count today AND the
@@ -283,23 +276,6 @@ async function _initTbQuota() {
   if (!_tbQuotaSettings["show-team-beasts-quota"]) return;
 
   await _loadTbQuotaFromStorage();
-
-  // Prefer cached config; fetch if needed for the limit.
-  if (_tbQuotaLimit === null) {
-    const cached = apiGetCacheByPattern(/\/api\/config(\?|$)/);
-    if (cached?.daily_team_beasts !== undefined) {
-      const parsed = parseInt(cached.daily_team_beasts, 10);
-      if (!Number.isNaN(parsed)) _tbQuotaLimit = parsed;
-    } else {
-      try {
-        const data = await gameRequest("/api/config");
-        if (data?.daily_team_beasts !== undefined) {
-          const parsed = parseInt(data.daily_team_beasts, 10);
-          if (!Number.isNaN(parsed)) _tbQuotaLimit = parsed;
-        }
-      } catch (e) {}
-    }
-  }
 
   _renderTbQuota();
   await _maybeSync();

@@ -57,7 +57,7 @@ function bindSettingsHandlers(panel) {
       }
       const el = document.getElementById(`setting-${s.key}`);
       if (!el) continue;
-      updated[s.key] = (s.type === "select" || s.type === "toggle-group") ? el.value : el.checked;
+      updated[s.key] = (s.type === "select" || s.type === "toggle-group" || s.type === "radio") ? el.value : el.checked;
     }
     await saveSettings(updated);
     applySettings(updated);
@@ -128,6 +128,8 @@ function bindSettingsHandlers(panel) {
         if (btnEl) btnEl.disabled = !shouldEnable;
       } else if (s.type === "toggle-group") {
         panel.querySelectorAll(`[data-ext-toggle="${s.key}"]`).forEach(b => b.disabled = !shouldEnable);
+      } else if (s.type === "radio") {
+        panel.querySelectorAll(`[data-ext-radio="${s.key}"]`).forEach(b => b.disabled = !shouldEnable);
       } else if (s.type === "multiselect-child") {
         // Handled via the multiselect block
       } else {
@@ -234,6 +236,15 @@ function bindSettingsHandlers(panel) {
       if (keyObj && keyObj.parentKey) {
         updateMultiselectSummary(keyObj.parentKey);
       }
+      persistSettings();
+    });
+  });
+
+  // Radio buttons
+  panel.querySelectorAll("[data-ext-radio]").forEach(radio => {
+    radio.addEventListener("change", () => {
+      const key = radio.dataset.extRadio;
+      document.getElementById(`setting-${key}`).value = radio.value;
       persistSettings();
     });
   });

@@ -8,6 +8,7 @@ function markSidebarPanels() {
     if (txt.includes("Konto"))          panel.classList.add("ext-panel-konto");
     if (txt.includes("Passiva"))        panel.classList.add("ext-panel-passiva");
     if (txt.includes("Gladiatorstall")) panel.classList.add("ext-panel-gladiatorstall");
+    if (txt.includes("Grupper"))        panel.classList.add("ext-panel-grupper");
   });
 
   // Mark the avatar nav panel by finding the ul that contains the /info link

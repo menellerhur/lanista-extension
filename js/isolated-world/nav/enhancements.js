@@ -130,18 +130,10 @@ async function initNavEnhancements() {
   const needsAvatars = _navSettings["beasts-badge"]  || _navSettings["hide-beasts-completed"]
                     || _navSettings["hide-adventure-no-badge"];
 
-  if (_beastsDailyLimit === null) {
-    const cached = apiGetCacheByPattern(/\/api\/config(\?|$)/);
-    if (cached?.daily_beasts !== undefined) {
-      _beastsDailyLimit = parseInt(cached.daily_beasts, 10) || null;
-    } else {
-      _fetchAndDispatch("/api/config");
-    }
-  }
-
   if (needsAvatars && (_beastsRemaining === null || _unseenAdventures === null)) {
     await _fetchAndDispatch("/api/users/me/avatars");
   }
+
 
   if (needsDailies) {
     if (!_dailiesReqs) {

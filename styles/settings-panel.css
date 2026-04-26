@@ -21,3 +21,26 @@
 .ext-checkbox:disabled {
   cursor: default !important;
 }
+
+/* Extension settings radio */
+.ext-radio:checked {
+  border-color: var(--primary);
+}
+.ext-radio:checked::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: var(--primary);
+}
+.ext-radio:focus-visible {
+  box-shadow: 0 0 0 3px var(--ring);
+  border-color: var(--ring);
+}
+.ext-radio:disabled {
+  cursor: default !important;
+}

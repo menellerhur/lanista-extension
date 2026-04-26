@@ -146,10 +146,27 @@ function buildCheckboxHtml(s, settings, parentKeys) {
   `;
 }
 
+function buildRadioHtmlArray(s, settings) {
+  const currentVal = settings[s.key] || s.default;
+  const parentDisabled = s.parentKey && !settings[s.parentKey];
+
+  return s.options.map((o, idx) => {
+    const isChecked = currentVal === o.value;
+    const hiddenInput = idx === 0 ? `<input type="hidden" id="setting-${s.key}" value="${currentVal}">` : "";
+    return `
+      ${hiddenInput}
+      <label class="flex items-center gap-2 cursor-pointer mt-0.5 w-fit">
+        <input type="radio" name="setting-${s.key}-radio" data-ext-radio="${s.key}" value="${o.value}" class="ext-radio appearance-none border border-border bg-white dark:bg-card size-4 shrink-0 rounded-full shadow-xs transition-shadow outline-none cursor-pointer relative disabled:opacity-50" ${isChecked ? "checked" : ""} ${parentDisabled ? "disabled" : ""}>
+        <span class="text-sm font-medium text-foreground/80 py-0.5">${o.label}</span>
+      </label>
+    `;
+  });
+}
+
 function buildExtEnabledNestedHtml(settings) {
   const dis = settings["extension-enabled"] ? "" : " disabled";
   const isExpanded = settings["extension-enabled"] ? " expanded" : "";
-  const btnClass = `ext-btn-action inline-flex items-center h-7 px-3 rounded-md border border-input bg-background text-xs font-medium text-foreground/80 shadow-xs cursor-pointer disabled:cursor-not-allowed disabled:opacity-50`;
+  const btnClass = `ext-btn-action inline-flex items-center px-3 rounded-md border border-input bg-background text-xs font-medium text-foreground/80 shadow-xs cursor-pointer disabled:cursor-not-allowed disabled:opacity-50" style="height:21px;padding-top:1px`;
   return `
     <div id="sub-container-extension-enabled" class="ext-nested-container${isExpanded}">
       <div class="ext-sub-content">

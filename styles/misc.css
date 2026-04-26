@@ -69,6 +69,17 @@ tr.ext-own-teambattle {
   }
 }
 
+/* Tournament/dailybattle start time appended to sidebar sub-items */
+.ext-tournament-time {
+  margin-left: auto;
+  flex-shrink: 0;
+  font-size: 10px;
+  font-variant-numeric: tabular-nums;
+  color: var(--muted-foreground, currentColor);
+  opacity: 0.65;
+  letter-spacing: 0.02em;
+}
+
 /* Compact "Skapa lagspel" button */
 body.ext-s-compact-teambattles-create-btn .ext-teambattle-create-btn {
   height: 28px !important;

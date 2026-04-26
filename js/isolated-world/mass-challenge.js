@@ -5,6 +5,11 @@
 let _massSettings = {};
 let _massObserver = null;
 let _isRestoring = false;
+let _activeAvatarId = null; // pushed in via ext:active-avatar from store-bridge
+
+window.addEventListener("ext:active-avatar", e => {
+  _activeAvatarId = e.detail?.id ?? null;
+});
 
 const RACE_ID_TO_NAME = {
   1: "människa",
@@ -38,12 +43,9 @@ const TACTIC_ID_TO_NAME = {
 function setupMassChallengeCapture() {
   apiRegisterHandler(/\/api\/challenges\/masscreate/, async (url, data, requestData) => {
     if (!_massSettings["save-mass-challenge-settings"] || !requestData) return;
+    if (!_activeAvatarId) return;
 
-    const userMe = apiGetCacheByPattern(/\/api\/users\/me(\?|$)/);
-    const avatarId = userMe?.avatar?.id;
-    if (!avatarId) return;
-
-    const storageKey = `mass_challenge_settings_${avatarId}`;
+    const storageKey = `mass_challenge_settings_${_activeAvatarId}`;
 
     try {
       if (requestData.race_settings) {
@@ -97,12 +99,9 @@ async function _cleanupOldGladiators(currentIds) {
  */
 async function restoreMassChallengeSettings(modal) {
   if (_isRestoring) return;
+  if (!_activeAvatarId) return;
 
-  const userMe = apiGetCacheByPattern(/\/api\/users\/me(\?|$)/);
-  const avatarId = userMe?.avatar?.id;
-  if (!avatarId) return;
-
-  const storageKey = `mass_challenge_settings_${avatarId}`;
+  const storageKey = `mass_challenge_settings_${_activeAvatarId}`;
   let saved;
   try {
     const stored = await chrome.storage.local.get(storageKey);

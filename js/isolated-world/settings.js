@@ -11,7 +11,6 @@ var SETTINGS = [
   { key: "hide-scrollbars",         label: "Dölj scrollbars",                                           default: false},
   { key: "hide-item-info",          label: "Dölj extra föremålsinformation",                            default: false},
   { key: "sidebar-no-select",       label: "Inaktivera markering av text i sidopanelerna",       default: false },
-  { key: "no-gladiator-reload",     label: "Inaktivera omrendering av sidan vid byte av gladiator",          default: false },
 
   { type: "header", label: "Vänster Sidomeny" },
   { key: "no-badge-pulse",          label: "Inaktivera pulserande effekt på badges",                  default: false },
@@ -53,6 +52,8 @@ var SETTINGS = [
   { key: "cd-mode-ranked",   label: "Rankade lagspel",       type: "toggle-group", parentKey: "hide-cooldowns-master", default: "show", options: [{v:"show",l:"Visa"},{v:"hide",l:"Dölj"},{v:"auto",l:"Auto"}] },
 
   { type: "header", label: "Höger Sidomeny" },
+  { key: "right-panel-reduce-padding", label: "Minska tomrum uppe och nere",            default: false},
+  { key: "move-ep-closer",          label: "Flytta ner dagens EP närmare EP-stapeln", default: false},
   { key: "truncate-sidebar-names",  label: "Förkorta långa gladiatornamn",               default: false},
   { key: "hide-sidebar-tooltips",   label: "Dölj frågetecken vid gladiator-info", default: false},
   { key: "hide-sidebar-info-toggle", label: "Dölj 'Dölj KP/EP/SM'", default: false },
@@ -83,6 +84,12 @@ var SETTINGS = [
   { key: "rpc-ko-messages",      label: "Brev",               type: "multiselect-child", parentKey: "right-panel-collapse-ko", default: true },
   { key: "rpc-ko-logout",        label: "Logga ut",           type: "multiselect-child", parentKey: "right-panel-collapse-ko", default: true },
 
+  { type: "header", label: "Gladiatorstall" },
+  { key: "hide-active-gladiator",      label: "Dölj aktiv gladiator",                                  default: false },
+  { key: "hide-stable-header",         label: "Dölj rubrik",                                           default: false },
+  { key: "increase-stable-name-width", label: "Öka tillgänglig bredd för gladiatornamn",               default: false },
+  { key: "no-gladiator-reload",        label: "Inaktivera omrendering vid byte av gladiator", default: false },
+
   { type: "header", label: "Info" },
   { key: "info-compact-spacing",    label: "Tydligare sektionsindelning",                default: false },
   { key: "info-tactics-side-by-side", label: "Visa standardtaktiker sida vid sida",        default: false},
@@ -100,7 +107,17 @@ var SETTINGS = [
   { key: "show-teambattles-monster-filter",  label: "Visa filter för att exkludera lagspel mot odjur",             default: false},
   { key: "auto-activate-teambattles-monster-filter", label: "Aktivera filter automatiskt när dagens kvot är nådd",        default: false, parentKey: "show-teambattles-monster-filter" },
 
+  { type: "header", label: "Rankade lagspel" },
+  { key: "ranked-battle-show-start-time",    label: "Visa starttid för rankat lagspel i menyn", default: false },
+  { key: "link-rankedbattles-to-mygroup",    label: "Flytta 'Min grupp' till Rankade lagspel", default: false },
+  { key: "link-rankedbattles-mode",          type: "radio", parentKey: "link-rankedbattles-to-mygroup", default: "replace", options: [
+      { value: "replace", label: "Ersätt länk" },
+      { value: "sublink", label: "Lägg till underlänk" },
+  ]},
+  { key: "hide-rankedbattles-on-cooldown",   label: "Dölj 'Rankade lagspel' om ej tillgänglig", default: false },
+
   { type: "header", label: "Turneringar" },
+  { key: "tournament-show-start-times",      label: "Visa starttider för anmälda turneringar i menyn", default: false },
   { key: "tournament-info-layout",           label: "Kolumnlayout för turneringsinfo", default: false },
   { key: "tournament-schedule-layout",       label: "Kompakt turneringsschema", default: false },
   { key: "tournament-schedule-layout-variant", type: "select", parentKey: "tournament-schedule-layout", default: "layout-1", options: [
@@ -180,7 +197,11 @@ function getEffectiveSettings(settings) {
 function applySettings(settings) {
   const effective = getEffectiveSettings(settings);
   for (const s of SETTINGS) {
-    if (!s.key || s.type === "select" || s.type === "toggle-group" || s.type === "header" || s.type === "multiselect") continue;
+    if (s.key === "link-rankedbattles-mode") {
+      document.body.classList.toggle("ext-s-rankedbattles-sublink", effective[s.key] === "sublink");
+      continue;
+    }
+    if (!s.key || s.type === "select" || s.type === "radio" || s.type === "toggle-group" || s.type === "header" || s.type === "multiselect") continue;
     if (s.key === "extension-enabled") continue;
     document.body.classList.toggle(`ext-s-${s.key}`, !!effective[s.key]);
   }

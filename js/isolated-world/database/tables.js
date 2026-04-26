@@ -397,8 +397,8 @@ function getTextWidth(text, font) {
   return context.measureText(text).width;
 }
 
-function itemsRenderVirtualTableShell(keys, sizingHtmls) {
-  const sizingRow = sizingHtmls ? itemsRenderSizingRow(sizingHtmls, keys) : "";
+function itemsRenderVirtualTableShell(keys, sizingItems) {
+  const sizingRow = sizingItems ? itemsRenderSizingRow(sizingItems, keys) : "";
   return `<table class="w-full text-sm border-collapse">
     <thead>
       <tr>${itemsRenderColHeaders(keys)}</tr>
@@ -409,10 +409,10 @@ function itemsRenderVirtualTableShell(keys, sizingHtmls) {
 }
 
 function itemsFindSizingValues(items, keys) {
-  const sizingHtmls = {};
+  const sizingItems = {};
   const maxWidths = {};
   keys.forEach(k => {
-    sizingHtmls[k] = "";
+    sizingItems[k] = null;
     maxWidths[k] = 0;
   });
 
@@ -427,33 +427,44 @@ function itemsFindSizingValues(items, keys) {
 
       const html = itemsGetCellInnerHtml(item, k);
       const text = (typeof html === "string") ? html.replace(/<[^>]*>?/gm, "") : String(html);
-      
+
       const font = (k === "name") ? fontMedium : fontNormal;
       const width = getTextWidth(text, font);
-      
+
       if (width > maxWidths[k]) {
         maxWidths[k] = width;
-        sizingHtmls[k] = html;
+        sizingItems[k] = item;
       }
     });
   });
-  return sizingHtmls;
+  return sizingItems;
 }
 
-function itemsRenderSizingRow(sizingHtmls, keys) {
+// Hides every <td> the sizing row emits. Per-cell styling is required because
+// renderCell can produce multi-cell HTML (e.g. durability/absorption in bonus mode);
+// wrapping multi-cell HTML in a single <td> lets the parser break out of the wrapper.
+const ITEMS_SIZING_HIDE_STYLE = "height:0;padding-top:0;padding-bottom:0;border:none;line-height:0;color:transparent;overflow:hidden;pointer-events:none;user-select:none;";
+
+function itemsApplySizingHiding(tdHtml) {
+  return tdHtml.replace(/<td\b([^>]*)>/g, (_match, attrs) => {
+    if (/\sstyle\s*=\s*"/.test(attrs)) {
+      const merged = attrs.replace(/(\sstyle\s*=\s*")([^"]*)(")/, (_m, p, body, q) => {
+        const sep = body && !body.endsWith(";") ? ";" : "";
+        return `${p}${body}${sep}${ITEMS_SIZING_HIDE_STYLE}${q}`;
+      });
+      return `<td${merged}>`;
+    }
+    return `<td${attrs} style="${ITEMS_SIZING_HIDE_STYLE}">`;
+  });
+}
+
+function itemsRenderSizingRow(sizingItems, keys) {
   const cells = keys.map(k => {
-    const col = ITEMS_ALL_COLUMNS[k];
-    // IMPORTANT: Must match the exact classes from columns.js to have the same natural width.
-    // Specifically 'whitespace-nowrap' and 'px-2'.
-    let cls = "px-2 text-xs whitespace-nowrap";
-    if (col.align === "center") cls += " text-center";
-    else if (col.align === "right") cls += " text-right tabular-nums";
-    if (k === "name") cls += " font-medium";
-    
-    const style = "height:0;padding-top:0;padding-bottom:0;border:none;line-height:0;color:transparent;overflow:hidden;pointer-events:none;user-select:none;";
-    return `<td class="${cls}" style="${style}"><div style="height:0;overflow:hidden">${sizingHtmls[k]}</div></td>`;
+    const item = sizingItems[k];
+    if (!item) return "";
+    return itemsApplySizingHiding(itemsRenderColCells(item, [k]));
   }).join("");
-  
+
   return `<tr style="height:0;border:none" aria-hidden="true">${cells}</tr>`;
 }
 
@@ -522,8 +533,8 @@ function itemsBuildMaterialTooltip(item) {
 
 function itemsRenderTable(items, view) {
   const keys = itemsGetVisibleColKeys();
-  const sizingValues = items.length ? itemsFindSizingValues(items, keys) : null;
-  let html = itemsRenderVirtualTableShell(keys, sizingValues);
+  const sizingItems = items.length ? itemsFindSizingValues(items, keys) : null;
+  let html = itemsRenderVirtualTableShell(keys, sizingItems);
   if (!items.length) html += '<p class="text-sm text-muted-foreground pt-2 pl-1">Inga rader matchade filtren.</p>';
   return html;
 }

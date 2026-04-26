@@ -68,6 +68,28 @@ function buildSettingsHtml(settings, parentKeys) {
       continue;
     }
 
+    if (s.type === "radio") {
+      if (inCoolDownSection) { html += `</div></div>`; inCoolDownSection = false; }
+      const radioElements = buildRadioHtmlArray(s, settings);
+      if (s.parentKey) {
+        if (inSimpleNestedGroup !== s.parentKey) {
+          if (inSimpleNestedGroup !== null) html += `</div></div>`;
+          const isExpanded = settings[s.parentKey] ? " expanded" : "";
+          html += `<div id="sub-container-${s.parentKey}" class="ext-nested-container${isExpanded}"><div class="ext-sub-content">`;
+          inSimpleNestedGroup = s.parentKey;
+        }
+        for (const radioEl of radioElements) {
+          html += `<div class="ext-sub-item">${radioEl}</div>`;
+        }
+      } else {
+        if (inSimpleNestedGroup !== null) { html += `</div></div>`; inSimpleNestedGroup = null; }
+        for (const radioEl of radioElements) {
+          html += `<div class="ext-radio-standalone py-1">${radioEl}</div>`;
+        }
+      }
+      continue;
+    }
+
     // Default: checkbox
     if (inCoolDownSection) { html += `</div></div>`; inCoolDownSection = false; }
     const isIndented = s.parentKey && s.parentKey !== "hide-cooldowns-master";

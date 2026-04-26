@@ -29,6 +29,26 @@ function utcDateTimeToSwedish(isoString) {
   }).format(d);
 }
 
+// Converts a UTC datetime string to Swedish local time-of-day ("HH:MM").
+// Accepts both ISO 8601 ("2026-04-25T18:15:00.000000Z") and SQL-ish
+// ("2026-04-25 17:40:00") formats — the latter is normalized by replacing
+// the space with "T" and appending "Z" so Date treats it as UTC.
+function utcDateTimeToSwedishTime(input) {
+  if (!input) return null;
+  let s = typeof input === "string" ? input : "";
+  if (s && !/[zZ]|[+-]\d{2}:?\d{2}$/.test(s)) {
+    s = s.replace(" ", "T") + "Z";
+  }
+  const d = new Date(s || input);
+  if (isNaN(d.getTime())) return null;
+  return new Intl.DateTimeFormat("sv-SE", {
+    timeZone: "Europe/Stockholm",
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: false
+  }).format(d);
+}
+
 // Returns today's date ("YYYY-MM-DD") as seen in Europe/Stockholm.
 function swedishDateToday() {
   return new Intl.DateTimeFormat("sv-SE", {
@@ -63,6 +83,11 @@ function swedishMidnightUTC() {
 // (main world) and broadcast here via CustomEvent. It is the same for all requests in a session.
 let _socketId = "";
 window.addEventListener("ext:socket-id", e => { _socketId = e.detail; });
+
+// Central cache for Pinia store data bridged from the main world.
+window.ExtConfig = null;
+window.addEventListener("ext:config-data", e => { window.ExtConfig = e.detail; });
+
 
 // Reads the XSRF token from the XSRF-TOKEN cookie (used by Laravel CSRF protection).
 function getXsrfToken() {
