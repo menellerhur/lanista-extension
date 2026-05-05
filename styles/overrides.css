@@ -102,17 +102,20 @@ body.ext-s-redirect-workshop a[href="/game/market/craft"] + ul {
 }
 
 /* Disable pulsing animation on badges */
-body.ext-s-no-badge-pulse .badge-notify {
+body.ext-s-no-badge-pulse .badge-notify,
+body.ext-s-no-badge-pulse [data-slot="badge"] {
   animation: none !important;
 }
 
 /* Hide badges on section headers, keep them on links */
-body.ext-s-hide-section-badges [data-slot="collapsible-trigger"] .badge-notify {
+body.ext-s-hide-section-badges [data-slot="collapsible-trigger"] .badge-notify,
+body.ext-s-hide-section-badges [data-slot="collapsible-trigger"] [data-slot="badge"] {
   display: none !important;
 }
 
 /* Hide badge on Utmaningar link */
-body.ext-s-hide-challenges-badge a[href="/game/arena/challenges"] .badge-notify {
+body.ext-s-hide-challenges-badge a[href="/game/arena/challenges"] .badge-notify,
+body.ext-s-hide-challenges-badge a[href="/game/arena/challenges"] [data-slot="badge"] {
   display: none !important;
 }
 
@@ -170,7 +173,7 @@ body.ext-s-hide-sidebar-info-toggle:not(.ext-s-hide-sidebar-challenge-toggle) .s
   animation: ext-pulse-warning 2s infinite;
   font-size: 1rem;
   margin-left: auto;
-  margin-right: 0.25rem;
+  margin-right: 1px;
 }
 
 .ext-challenge-warning::after {
@@ -204,6 +207,10 @@ body.ext-s-show-database .ext-database-link:not(.ext-rpc-hidden) { display: list
 /* Notifications sidebar link — hidden unless show-notifications-log is on */
 .ext-notifications-link { display: none !important; }
 body.ext-s-show-notifications-log .ext-notifications-link:not(.ext-rpc-hidden) { display: list-item !important; }
+
+/* Planera gladiator sidebar link — hidden unless show-plan-gladiator is on */
+.ext-plan-gladiator-link { display: none !important; }
+body.ext-s-show-plan-gladiator .ext-plan-gladiator-link:not(.ext-rpc-hidden) { display: list-item !important; }
 
 /* Mark own gladiator */
 body.ext-s-mark-gladiator .battle-text span.underline {

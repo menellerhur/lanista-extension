@@ -369,6 +369,7 @@
   text-shadow: none !important;
   font-weight: 600;
   font-size: 11px;
+  line-height: 1.2;
   text-transform: uppercase;
   letter-spacing: 0.05em;
   color: var(--muted-foreground);

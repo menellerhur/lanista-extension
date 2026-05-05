@@ -23,7 +23,17 @@
       if (configStore) {
         watch(
           () => configStore.raw,
-          raw => { if (raw) dispatch("ext:config-data", { ...raw }); }
+          raw => {
+            if (raw) {
+              // Convert Proxy to plain object so it can be cloned via CustomEvent
+              try {
+                const plain = JSON.parse(JSON.stringify(raw));
+                dispatch("ext:config-data", plain);
+              } catch (e) {
+                console.error("[Lanista-Ext] Failed to clone configStore.raw", e);
+              }
+            }
+          }
         );
       }
 

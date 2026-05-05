@@ -10,20 +10,26 @@ window.addEventListener("ext:socket-id", e => {
   window._extSocketId = e.detail;
 });
 
-const mainObserver = new MutationObserver((_mutations, obs) => {
+const mainObserver = new MutationObserver(async (_mutations, obs) => {
   const aktivitetSpan = [...document.querySelectorAll("span.sidebar-nav-text")]
     .find(el => el.textContent.trim() === "Aktivitet");
 
   if (aktivitetSpan) {
     obs.disconnect();
+
+    // Ensure config is available before triggering injections or page rendering
+    await ensureExtConfig();
+
     markSidebarPanels();
     injectSettingsLink();
     injectDatabaseLink();
     injectNotificationsLink();
+    injectPlanGladiatorLink();
     injectPassiveLink();
     if (location.hash === "#extension") showExtensionPage();
     else if (location.hash === "#database") showDatabasePage();
     else if (location.hash === "#notifications") showNotificationsPage();
+    else if (location.hash === "#planera-gladiator") showPlanGladiatorPage();
     initNavEnhancements();
     loadSettings().then(settings => {
       const effective = getEffectiveSettings(settings);
@@ -36,7 +42,6 @@ const mainObserver = new MutationObserver((_mutations, obs) => {
       initSidebarSettings(effective);
       initAvatarInfo(effective);
       initAvatarStatistics(effective);
-      initMassChallenge(effective);
     });
   }
 });
@@ -53,7 +58,6 @@ chrome.storage.onChanged.addListener((_changes, area) => {
     applySettings(settings);
     setupGladiatorSwitchInterception(effective);
     initSidebarSettings(effective);
-    initMassChallenge(effective);
   });
 });
 

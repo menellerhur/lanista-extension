@@ -14,10 +14,16 @@
       const routerRoute = router?.currentRoute?.value || router?.currentRoute;
       const path = routerRoute?.path || "";
 
-      // Step 1: Invalidate Dailies cache
+      // Step 1: Invalidate caches
       if (apiClient) {
         apiClient.removeCacheForPath?.("daily");
         apiClient.removeCacheForPath?.("dailies");
+        apiClient.removeCacheForPath?.("tournaments");
+        apiClient.removeCacheForPath?.("clans");
+        apiClient.removeCacheForPath?.("associations");
+        apiClient.removeCacheForPath?.("challenges");
+        apiClient.removeCacheForPath?.("adventures");
+
         if (!path.includes("/arena/dailies")) {
           apiClient.get("/avatars/me/daily");
         }
@@ -42,15 +48,24 @@
         await avatarStore.fetchAvatar(userStore.avatar.id);
       }
 
-      // Step 5: If user is on the Dailies page, force a re-mount to show fresh state
-      // We re-verify the current path right before navigating to ensure accuracy
+      // Step 5: Force re-mount for specific pages to ensure fresh UI state
       const currentRoute = router?.currentRoute?.value || router?.currentRoute;
       const currentPath = currentRoute?.path || "";
 
-      if (router && (currentPath.includes("/arena/dailies") || currentPath.includes("/arena/tournaments") || currentPath.includes("/arena/dailybattles"))) {
-        // We navigate away and then back
+      if (router && (
+        currentPath.includes("/arena/dailies") || 
+        currentPath.includes("/arena/tournaments") || 
+        currentPath.includes("/arena/dailybattles") ||
+        currentPath.includes("/arena/challenges") ||
+        currentPath.includes("/arena/adventures") ||
+        currentPath.includes("/clans") ||
+        currentPath.includes("/associations")
+      )) {
+        // Use fullPath to preserve query parameters/tabs
+        const targetPath = currentRoute.fullPath || currentPath;
+        // We navigate away and then back to trigger a full component re-mount
         await router.push("/arena");
-        await router.replace(currentPath);
+        await router.replace(targetPath);
       }
 
       // Step 6: Trigger building/cooldown refresh in the sidebar
